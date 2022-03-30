@@ -36,7 +36,7 @@ spec:
           {{- end }}
           - name: RBAC_PATH
             valueFrom:
-              configKeyMapRef:
+              configMapKeyRef:
                 name: rbac-config
                 key: rbac
           securityContext:
