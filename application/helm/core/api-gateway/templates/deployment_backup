@@ -34,11 +34,6 @@ spec:
           - name: {{ $k }}
             value: '{{ $v }}'
           {{- end }}
-          - name: RBAC_PATH
-            valueFrom:
-              configKeyMapRef:
-                name: rbac-config
-                key: rbac
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -60,7 +55,15 @@ spec:
             periodSeconds: 5
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: {{ .Values.rbacVolume.name }}
+              mountPath: {{ .Values.rbacVolume.path }}
+              readOnly: true
       volumes:
+        - name: {{ .Values.rbacVolume.name }}
+          configMap:
+            name: {{ .Values.rbacConfig.name }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
