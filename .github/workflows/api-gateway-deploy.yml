@@ -67,6 +67,7 @@ on:
       - main
       - sprint-*
       - workflow
+      - local-1
     on:
       workflow_dispatch:
         inputs:
