@@ -130,6 +130,7 @@ jobs:
     - name: Check file structure
       run: ls -lrt ${{ github.workspace }}
 
+    - if: github.event.inputs.cluster-name == 'true'
     - name: 'Deploy'
       uses: bitovi/github-actions-deploy-eks-helm@v1.1.0
       # uses: vimeda/helm@v1.6.8
