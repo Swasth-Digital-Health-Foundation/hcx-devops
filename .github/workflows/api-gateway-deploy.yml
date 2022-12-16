@@ -63,13 +63,13 @@
 name: Deploy
 on:
   workflow_dispatch:
-  inputs:
-  cluster-name:
-    description: 'Build Cluster'
-    required: true
-  namespace:
-    description: 'Build ENV'
-    required : true
+    inputs:
+      cluster-name:
+         description: 'Build Cluster'
+         required: true
+      namespace:
+         description: 'Build ENV'
+         required : true
 jobs:
   deployment:
     runs-on: 'ubuntu-latest'
