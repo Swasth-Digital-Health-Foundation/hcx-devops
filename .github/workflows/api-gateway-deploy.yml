@@ -6,7 +6,6 @@ on:
          description: 'Build Cluster'
          required: true
          default: 'true'
-
       namespace:
          description: 'Build ENV'
          required : true
@@ -17,17 +16,6 @@ jobs:
     runs-on: 'ubuntu-latest'
 
     steps:
-      - name: 'Deploy'
-        uses: bitovi/github-actions-deploy-eks-helm@v1.1.0
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS__KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
-          cluster-name: '${{ github.event.inputs.cluster-name }}'
-          name: 'demo-app'
-          namespace: '${{ github.event.inputs.namespace }}'
-          chart-path: 'application/helm/core/demo-app/'
-          config-files: 'application/helm/core/demo-app/values.yaml, DevOps/hcx/ansible/inventory/dev/group_vars/dev.yaml' #, https://github.com/Swasth-Digital-Health-Foundation/DevOps/blob/workflow/hcx/ansible/inventory/dev/group_vars/dev.yaml'
 
       - uses: actions/checkout@v2
       - name: AWS Credentials
@@ -49,6 +37,20 @@ jobs:
 
       - name: Check file structure
         run: ls -lrt ${{ github.workspace }}
+
+
+      - if: github.event.inputs.namespace == 'true'
+      - name: 'Deploy'
+        uses: bitovi/github-actions-deploy-eks-helm@v1.1.0
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS__KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+          cluster-name: '${{ github.event.inputs.cluster-name }}'
+          name: 'demo-app'
+          namespace: '${{ github.event.inputs.namespace }}'
+          chart-path: 'application/helm/core/demo-app/'
+          config-files: 'application/helm/core/demo-app/values.yaml, DevOps/hcx/ansible/inventory/dev/group_vars/dev.yaml' #, https://github.com/Swasth-Digital-Health-Foundation/DevOps/blob/workflow/hcx/ansible/inventory/dev/group_vars/dev.yaml'
 
     env:
         KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
