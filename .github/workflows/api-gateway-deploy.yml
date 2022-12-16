@@ -62,10 +62,6 @@
 
 name: Deploy
 on:
-  push:
-    branches:
-       - local-1
-
   workflow_dispatch:
     inputs:
       cluster-name:
