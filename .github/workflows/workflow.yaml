@@ -1,13 +1,12 @@
 name: Deploy
 on:
   push:
-    branches :
-       - local-2
+    branches:
+      - local-2
 jobs:
   deployment:
-    runs-on: 'ubuntu-latest'
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-    name : path check
-    run : pwd
+    name: path check
+    run: pwd
