@@ -10,12 +10,12 @@ on:
         description: 'Build ENV'
         required : true
         default: 'true'
-#jobs:
-#  deployment:
-#    runs-on: 'ubuntu-latest'
-#    steps:
-#      - uses: actions/checkout@v2
-#
-#    name : path check
-#    run : pwd
+jobs:
+  deployment:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v2
+
+    name : path check
+    run : pwd
 
