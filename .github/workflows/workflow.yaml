@@ -1,8 +1,15 @@
 name: Deploy
 on:
-  push:
-    branches:
-      - local-2
+  workflow_dispatch:
+    inputs:
+      cluster-name:
+        description: 'Build Cluster'
+        required: true
+        default: 'true'
+      namespace:
+        description: 'Build ENV'
+        required : true
+        default: 'true'
 jobs:
   deployment:
     runs-on: ubuntu-latest
