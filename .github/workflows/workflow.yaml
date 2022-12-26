@@ -9,4 +9,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
     name: path check
-    run: pwd
+    run: ls
