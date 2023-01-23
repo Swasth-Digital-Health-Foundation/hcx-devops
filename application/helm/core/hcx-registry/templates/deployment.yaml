@@ -62,6 +62,11 @@ spec:
       - name: registryschemas
         configMap:
           name: registryschemas
+          items:
+            - key: Organisation.json
+              path: Organisation.json
+            - key: User.json
+              path: User.json
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
