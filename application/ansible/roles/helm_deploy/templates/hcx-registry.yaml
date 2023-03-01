@@ -15,4 +15,3 @@ env:
   elastic_search_connection_url : "{{groups['elasticsearch'][0]}}:9200"
   audit_enabled: true
   audit_frame_store: DATABASE
-  audit_suffix: Organisation_Audit
