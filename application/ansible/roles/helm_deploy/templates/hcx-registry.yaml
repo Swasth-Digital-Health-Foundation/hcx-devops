@@ -14,5 +14,5 @@ env:
   elastic_search_enabled : true
   elastic_search_connection_url : "{{groups['elasticsearch'][0]}}:9200"
   workflow_enabled : false
-  audit_enabled: true
-  audit_frame_store: DATABASE
+#  audit_enabled: true
+#  audit_frame_store: DATABASE
