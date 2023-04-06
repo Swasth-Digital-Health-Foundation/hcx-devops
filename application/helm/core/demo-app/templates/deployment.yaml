@@ -40,47 +40,10 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            - name: PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: demo-app
-                  key: demo_app_port
-            - name: HCX_UPSTREAM
-              valueFrom:
-                configMapKeyRef:
-                  name: demo-app
-                  key: hcx_upstream
-            - name: SENDER_CODE
-              valueFrom:
-                configMapKeyRef:
-                  name: demo-app
-                  key: sender_code
-            - name: hcx_username
-              valueFrom:
-                configMapKeyRef:
-                  name: demo-app
-                  key: hcx_username
-            - name: hcx_password
-              valueFrom:  
-                configMapKeyRef:
-                  name: demo-app
-                  key: hcx_password
-            - name: token_url
-              valueFrom:
-                configMapKeyRef:
-                  name: demo-app
-                  key: token_url
-            - name: RECIPIENT_CODE
-              valueFrom:
-                configMapKeyRef:
-                  name: demo-app
-                  key: recipient_code
-            - name: api_version
-              valueFrom:
-                configMapKeyRef:
-                  name: demo-app
-                  key: api_version
-
+          {{- range $k, $v := .Values.demo_app }}
+          - name: {{ $k }}
+            value: '{{ $v }}'
+          {{- end }}
           volumeMounts:
           - name: demo-app
             mountPath: "/demo-app"
