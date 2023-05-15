@@ -4594,7 +4594,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"Api call id cannot be null, empty and other than 'String'\", function () {\r",
+															"pm.test(\"Request exist with same api call id\", function () {\r",
 															"    var response = pm.response.json()\r",
 															"    pm.response.to.have.status(400);\r",
 															"    pm.expect(response.error[\"code\"]).to.eql(\"ERR_INVALID_API_CALL_ID\");\r",
@@ -4616,7 +4616,7 @@
 															"var decoded = JSON.parse(atob(headers));\r",
 															"//generating the payload\r",
 															"decoded[\"x-hcx-correlation_id\"] = uuid.v4();\r",
-															"decoded[\"x-hcx-api_call_id\"] = pm.environment.get(\"payment_req_api_call_id\");\r",
+															"decoded[\"x-hcx-api_call_id\"] = pm.environment.get(\"check_req_api_call_id\");\r",
 															"decoded[\"x-hcx-sender_code\"] = pm.environment.get(\"sender_code\");\r",
 															"decoded[\"x-hcx-recipient_code\"] = pm.environment.get(\"recipient_code\");\r",
 															"decoded[\"x-hcx-timestamp\"] = moment().subtract(1, 'minutes').format(\"YYYY-MM-DDTHH:mm:ss.SSSZZ\");\r",
