@@ -9,7 +9,7 @@ data:
   base-config: |+
     kafka {
       broker-servers = "{{ .Values.common.kafka_host }}:9092"
-      zookeeper = "{{ .Values.common.kafka_host }}:2181"
+      zookeeper = "{{ .Values.common.zookeeper_host }}:2181"
         producer {
           max-request-size = 1572864
         }
