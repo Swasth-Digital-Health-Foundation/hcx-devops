@@ -222,7 +222,7 @@ spec:
           mountPath: /opt/flink/conf/log4j-console.properties
           subPath: log4j-console.properties
         resources:
-{{ toYaml .Values.taskmanagerResources | indent 10 }}
+{{ toYaml .Values.hcx_pipeline_jobs.taskmanagerResources | indent 10 }}
         {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 10 }}
