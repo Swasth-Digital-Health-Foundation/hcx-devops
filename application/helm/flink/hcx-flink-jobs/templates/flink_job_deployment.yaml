@@ -99,6 +99,7 @@ spec:
             path: {{ .Release.Name }}.conf
           - key: log4j_console_properties
             path: log4j-console.properties
+      serviceAccount: {{ .Release.Namespace }}-sa
       restartPolicy: OnFailure
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -186,6 +187,7 @@ spec:
             path: flink-conf.yaml
           - key: log4j_console_properties
             path: log4j-console.properties
+      serviceAccount: {{ .Release.Namespace }}-sa
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

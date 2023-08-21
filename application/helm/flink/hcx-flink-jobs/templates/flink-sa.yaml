@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::131795456882:role/flink-checkpoint-dev
+  labels:
+    app: flink
+    app.kubernetes.io/instance: {{ .Release.Namespace }}-sa
+
+  name: {{ .Release.Namespace }}-sa
+  namespace: {{ .Values.namespace }}
