@@ -17,7 +17,7 @@ data:
       job {
         env = "{{ .Values.common.env }}"
         # enable.distributed.checkpointing = {{ .Values.hcx_pipeline_jobs.enable_distributed_checkpointing }}
-        enable.distributed.checkpointing = true
+        enable.distributed.checkpointing = false
         statebackend {
           # base.url = "{{ .Values.hcx_pipeline_jobs.s3_bucket_name }}"
           base.url = "s3://pipeline-jobs-checkpoint"
