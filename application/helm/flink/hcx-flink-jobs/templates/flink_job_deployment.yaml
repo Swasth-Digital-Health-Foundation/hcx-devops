@@ -40,7 +40,7 @@ spec:
   {{- if eq .Values.service.type "ClusterIP" }}
   type: ClusterIP
   {{- end }}
-  {{- if eq .Values.service.type "LoadBalancer" }}
+  {{- if eq  .Values.hcx_pipeline_jobs.service.type "LoadBalancer" }}
   type: LoadBalancer
   {{- end }}
   ports:
