@@ -1,3 +1,4 @@
+{{- if .Values.hcx_pipeline_jobs.flink-sa.enabled -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -10,3 +11,4 @@ metadata:
     app.kubernetes.io/name: {{ .Release.Namespace }}-sa
   name: {{ .Release.Namespace }}-sa
   namespace: {{ .Values.namespace }}
+{{- end }}
