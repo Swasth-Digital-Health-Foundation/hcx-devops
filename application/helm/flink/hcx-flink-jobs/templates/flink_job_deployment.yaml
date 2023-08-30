@@ -110,10 +110,10 @@ spec:
       {{- $name := .Release.Name }}
       containers:
       - name: {{ .Release.Name }}-jobmanager
-        {{- if eq .Values.image.tag "" -}}
-        image: "{{ .Values.image.repository }}
+        {{- if eq .Values.hcx_pipeline_jobs.image.tag "" -}}
+        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}
         {{- end }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}:{{ .Values.hcx_pipeline_jobs.image.tag }}"
         imagePullPolicy: Always
         workingDir: /opt/flink
         command: ["/opt/flink/bin/standalone-job.sh"]
