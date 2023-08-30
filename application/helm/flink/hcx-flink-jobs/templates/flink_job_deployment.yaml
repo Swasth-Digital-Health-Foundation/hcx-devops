@@ -110,7 +110,10 @@ spec:
       {{- $name := .Release.Name }}
       containers:
       - name: {{ .Release.Name }}-jobmanager
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        {{- if eq .Values.image.tag "" -}}
+        image: "{{ .Values.image.repository }}
+        {{- end }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: Always
         workingDir: /opt/flink
         command: ["/opt/flink/bin/standalone-job.sh"]
