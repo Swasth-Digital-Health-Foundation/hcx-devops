@@ -99,7 +99,9 @@ spec:
             path: {{ .Release.Name }}.conf
           - key: log4j_console_properties
             path: log4j-console.properties
+      {{- if .Values.hcx_pipeline_jobs.enable_distributed_checkpointing -}}
       serviceAccount: {{ .Release.Namespace }}-sa
+      {{- end }}
       restartPolicy: OnFailure
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -191,7 +193,9 @@ spec:
             path: base-config.conf
           - key: {{ .Release.Name }}
             path: {{ .Release.Name }}.conf
+      {{- if .Values.hcx_pipeline_jobs.enable_distributed_checkpointing -}}
       serviceAccount: {{ .Release.Namespace }}-sa
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
