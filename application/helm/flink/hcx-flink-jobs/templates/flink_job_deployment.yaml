@@ -37,12 +37,7 @@ metadata:
 {{- end }}
 {{- end }}
 spec:
-  {{- if eq .Values.service.type "ClusterIP" }}
   type: ClusterIP
-  {{- end }}
-  {{- if eq  .Values.hcx_pipeline_jobs.service.type "LoadBalancer" }}
-  type: LoadBalancer
-  {{- end }}
   ports:
   - name: rest
     port: {{ .Values.rest_port }}
@@ -110,11 +105,11 @@ spec:
       {{- $name := .Release.Name }}
       containers:
       - name: {{ .Release.Name }}-jobmanager
-        {{- if eq .Values.image.tag "" -}}
-        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}
+        {{ if eq .Values.image.tag "" }}
+        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}"
         {{ else }}
         image: "{{ .Values.hcx_pipeline_jobs.image.repository }}:{{ .Values.image.tag }}"
-        {{- end }}
+        {{ end }}
         imagePullPolicy: Always
         workingDir: /opt/flink
         command: ["/opt/flink/bin/standalone-job.sh"]
@@ -206,11 +201,11 @@ spec:
       {{- end }}
       containers:
       - name: {{ .Release.Name }}-taskmanager
-      {{- if eq .Values.image.tag "" -}}
-        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}
-      {{ else }}
+        {{ if eq .Values.image.tag "" }}
+        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}"
+        {{ else }}
         image: "{{ .Values.hcx_pipeline_jobs.image.repository }}:{{ .Values.image.tag }}"
-      {{- end }}
+        {{ end }}
         imagePullPolicy: Always
         workingDir: {{ .Values.taskmanager.flink_work_dir }}
         command: ["/opt/flink/bin/taskmanager.sh"]
@@ -255,4 +250,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 10 }}
       {{- end }}
-
