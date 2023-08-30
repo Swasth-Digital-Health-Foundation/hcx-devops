@@ -110,10 +110,10 @@ spec:
       {{- $name := .Release.Name }}
       containers:
       - name: {{ .Release.Name }}-jobmanager
-        {{- if eq .Values.hcx_pipeline_jobs.image.tag "" -}}
+        {{- if eq .Values.image.tag "" -}}
         image: "{{ .Values.hcx_pipeline_jobs.image.repository }}
         {{ else }}
-        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}:{{ .Values.hcx_pipeline_jobs.image.tag }}"
+        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}:{{ .Values.image.tag }}"
         {{- end }}
         imagePullPolicy: Always
         workingDir: /opt/flink
@@ -206,11 +206,11 @@ spec:
       {{- end }}
       containers:
       - name: {{ .Release.Name }}-taskmanager
-        {{- if eq .Values.hcx_pipeline_jobs.image.tag "" -}}
+      {{- if eq .Values.image.tag "" -}}
         image: "{{ .Values.hcx_pipeline_jobs.image.repository }}
-        {{ else }}
-        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}:{{ .Values.hcx_pipeline_jobs.image.tag }}"
-        {{- end }}
+      {{ else }}
+        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}:{{ .Values.image.tag }}"
+      {{- end }}
         imagePullPolicy: Always
         workingDir: {{ .Values.taskmanager.flink_work_dir }}
         command: ["/opt/flink/bin/taskmanager.sh"]
