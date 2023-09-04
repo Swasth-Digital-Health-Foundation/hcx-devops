@@ -33,9 +33,9 @@ spec:
                 - containerPort: 80
               env:
                 - name: EMAIL
-                  value: sadanand@sanketika.in
+                  value: {{ .Values.hcx-ssl.email }}
                 - name: DOMAIN
-                  value: dev-hcx.dashboard.swasth.app
+                  value: {{ .Values.hcx-ssl.domain }} 
               command:
                 - /bin/sh
               args:
