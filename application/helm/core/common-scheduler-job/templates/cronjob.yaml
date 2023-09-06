@@ -13,7 +13,7 @@ metadata:
   name: hcx-participant-validator
   namespace: kube-system
 spec:
-  schedule: "* * * * *"
+  schedule: "30 12 * * *"
   successfulJobsHistoryLimit: 2
   failedJobsHistoryLimit: 2
   jobTemplate:
@@ -42,7 +42,7 @@ metadata:
   name: hcx-retry-requests
   namespace: kube-system
 spec:
-  schedule: "* * * * *"
+  schedule: "30 12 * * *"
   successfulJobsHistoryLimit: 2
   failedJobsHistoryLimit: 2
   jobTemplate:
