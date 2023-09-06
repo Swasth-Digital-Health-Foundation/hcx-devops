@@ -31,7 +31,9 @@ spec:
               image: maheshkg/hcx-functional-scheduler:0.1
               imagePullPolicy: Always
               command:
-                - java -version; java -jar app.jar ParticipantValidation
+                - /bin/sh
+                - -c
+                - date; java -version; java -jar app.jar ParticipantValidation
           restartPolicy: OnFailure
 ---
 apiVersion: batch/v1
@@ -58,5 +60,7 @@ spec:
               image: maheshkg/hcx-functional-scheduler:0.1
               imagePullPolicy: Always
               command:
-                - java -version; java -jar app.jar Retry
+                - /bin/sh
+                - -c
+                - date; java -version; java -jar app.jar Retry
           restartPolicy: OnFailure
