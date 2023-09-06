@@ -10,7 +10,7 @@ metadata:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: hcx-functional-cron
+  name: hcx-participant-validator
   namespace: kube-system
 spec:
   schedule: "* * * * *"
@@ -22,13 +22,41 @@ spec:
         spec:
           serviceAccountName: hcx-functional-schedulers
           containers:
-            - name: hcx-functional-schedulers
+            - name: hcx-participant-validator
               env:
               {{- range $k, $v := .Values.common_scheduler_jobs }}
               - name: {{ $k }}
                 value: '{{ $v }}'
               {{- end }}
               image: maheshkg/hcx-functional-scheduler:0.1
+              imagePullPolicy: Always
               command:
-                - java -version; java -jar app.jar abc
+                - java -version; java -jar app.jar ParticipantValidation
+          restartPolicy: OnFailure
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hcx-retry-requests
+  namespace: kube-system
+spec:
+  schedule: "* * * * *"
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: hcx-functional-schedulers
+          containers:
+            - name: hcx-retry-requests
+              env:
+              {{- range $k, $v := .Values.common_scheduler_jobs }}
+              - name: {{ $k }}
+                value: '{{ $v }}'
+              {{- end }}
+              image: maheshkg/hcx-functional-scheduler:0.1
+              imagePullPolicy: Always
+              command:
+                - java -version; java -jar app.jar Retry
           restartPolicy: OnFailure
