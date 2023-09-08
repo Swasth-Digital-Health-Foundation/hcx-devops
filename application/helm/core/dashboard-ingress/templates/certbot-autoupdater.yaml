@@ -5,7 +5,7 @@
 #
 # for example
 # `kubectl apply -f certbot-autoupdater.yaml -n dev`
-{ { if .Values.ssl.enabled } }
+{ { if .Values.hcx-ssl.enabled } }
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
