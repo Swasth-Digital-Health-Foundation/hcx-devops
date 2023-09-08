@@ -1,11 +1,11 @@
 # This is a cronjob for automatically update your letsencrypt certificate in kubernetes cluster.
 # Only dependency here is to have a domain path to ./well-known => this service (certbot:80)
 #
-# Note: this app should run in the same namespace as ngninx-ingress.
+# Note: this app should run in the same namespace as nginx-ingress.
 #
 # for example
 # `kubectl apply -f certbot-autoupdater.yaml -n dev`
----
+{{ if .Values.hcx_ssl.enabled }}
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -32,10 +32,12 @@ spec:
             ports:
             - containerPort: 80
             env:
-            - name: EMAIL
-              value: {{ .Values.hcx-ssl.email }}
-            - name: DOMAIN
-              value: {{ .Values.hcx-ssl.domain }}
+                - name: EMAIL
+                  value: {{ .Values.hcx_ssl.email }}
+                - name: DOMAIN
+                  value: {{ .Values.hcx_ssl.domain }}
+                - name: NAMESPACE
+                  value: {{ .Values.hcx_ssl.namespace }}
             command:
               - /bin/sh
             args:
@@ -64,13 +66,13 @@ data:
     }
     certbot certonly --non-interactive --agree-tos -m $EMAIL -d $DOMAIN --standalone
     catch_err $?
-    kubectl get secret hcx-ssl -o yaml > ssl.yaml
+    kubectl get secret hcx-ssl -o yaml -n $NAMESPACE > ssl.yaml
     cat ssl.yaml | sed "s/ tls.crt: .*/ tls.crt: $(cat /etc/letsencrypt/live/${DOMAIN}/fullchain.pem | base64 | tr -d '\n')/g" | \
                    sed "s/ tls.key: .*/ tls.key: $(cat /etc/letsencrypt/live/${DOMAIN}/privkey.pem |  base64 | tr -d '\n')/g" > file.yaml
     catch_err $?
     kubectl apply -f file.yaml
-    kubectl rollout restart deployment nginx-ingress
-    kubectl rollout status deployment nginx-ingress
+    kubectl rollout restart deployment nginx-ingress -n $NAMESPACE
+    kubectl rollout status deployment nginx-ingress -n $NAMESPACE
 ---
 apiVersion: v1
 kind: Service
@@ -120,3 +122,4 @@ roleRef:
   kind: Role #this must be Role or ClusterRole
   name: certbot # this must match the name of the Role or ClusterRole you wish to bind to
   apiGroup: rbac.authorization.k8s.io
+{{ end }}

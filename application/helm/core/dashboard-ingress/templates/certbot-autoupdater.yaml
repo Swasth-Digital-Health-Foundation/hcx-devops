@@ -1,12 +1,11 @@
 # This is a cronjob for automatically update your letsencrypt certificate in kubernetes cluster.
 # Only dependency here is to have a domain path to ./well-known => this service (certbot:80)
 #
-# Note: this app should run in the same namespace as nginx-ingress.
+# Note: this app should run in the same namespace as dashboard-ingress.
 #
 # for example
 # `kubectl apply -f certbot-autoupdater.yaml -n dev`
-{ { if .Values.hcx-ssl.enabled } }
----
+{{ if .Values.hcx_ssl.enabled }}
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -34,11 +33,11 @@ spec:
                 - containerPort: 80
               env:
                 - name: EMAIL
-                  value: { { .Values.hcx-ssl.email } }
+                  value: {{ .Values.hcx_ssl.email }}
                 - name: DOMAIN
-                  value: { { .Values.hcx-ssl.domain } }
+                  value: {{ .Values.hcx_ssl.domain }}
                 - name: NAMESPACE
-                  value: { { .Values.hcx-ssl.namespace } }
+                  value: {{ .Values.hcx_ssl.namespace }}
               command:
                 - /bin/sh
               args:
@@ -125,3 +124,4 @@ roleRef:
   kind: Role #this must be Role or ClusterRole
   name: certbot # this must match the name of the Role or ClusterRole you wish to bind to
   apiGroup: rbac.authorization.k8s.io
+{{ end }}

@@ -60,7 +60,7 @@ spec:
       - name: nginx
         configMap:
           name: dashboard-ingress-conf
-{{- if .Values.hcx.ssl.enabled  }}
+{{- if .Values.hcx_ssl.enabled  }}
       - name: ssl
         secret:
           defaultMode: 420
