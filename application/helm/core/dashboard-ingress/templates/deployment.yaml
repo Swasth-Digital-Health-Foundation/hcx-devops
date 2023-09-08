@@ -60,11 +60,12 @@ spec:
       - name: nginx
         configMap:
           name: dashboard-ingress-conf
+{{- if .Values.hcx.ssl.enabled  }}
       - name: ssl
         secret:
           defaultMode: 420
           secretName: hcx-dashboard-ssl
-
+{{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
