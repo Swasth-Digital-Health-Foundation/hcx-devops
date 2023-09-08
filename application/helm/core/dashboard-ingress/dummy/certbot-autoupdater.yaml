@@ -37,6 +37,8 @@ spec:
                   value: { { .Values.hcx-ssl.email } }
                 - name: DOMAIN
                   value: { { .Values.hcx-ssl.domain } }
+                - name: NAMESPACE
+                  value: { { .Values.hcx-ssl.namespace } }
               command:
                 - /bin/sh
               args:
@@ -66,13 +68,13 @@ data:
     }
     certbot certonly --non-interactive --agree-tos -m $EMAIL -d $DOMAIN --standalone
     catch_err $?
-    kubectl get secret hcx-dashboard-ssl -o yaml > ssl.yaml
+    kubectl get secret hcx-dashboard-ssl -o yaml -n $NAMESPACE > ssl.yaml
     cat ssl.yaml | sed "s/ tls.crt: .*/ tls.crt: $(cat /etc/letsencrypt/live/${DOMAIN}/fullchain.pem | base64 | tr -d '\n')/g" | \
                    sed "s/ tls.key: .*/ tls.key: $(cat /etc/letsencrypt/live/${DOMAIN}/privkey.pem |  base64 | tr -d '\n')/g" > file.yaml
     catch_err $?
     kubectl apply -f file.yaml
-    kubectl rollout restart deployment dashboard-ingress
-    kubectl rollout status deployment dashboard-ingress
+    kubectl rollout restart deployment dashboard-ingress -n $NAMESPACE
+    kubectl rollout status deployment dashboard-ingress -n $NAMESPACE
 
 ---
 apiVersion: v1
