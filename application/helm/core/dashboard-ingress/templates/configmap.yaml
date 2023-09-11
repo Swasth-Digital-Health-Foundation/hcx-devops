@@ -28,7 +28,7 @@ data:
     }
  {{ end }}
   sites.conf: |-
-{{- if .Values.sites_conf && .Values.hcx_ssl.enabled }}
+{{- if .Values.sites_conf }} && {{- if .Values.hcx_ssl.enabled }}
 {{ .Values.sites_conf | indent 4 }}
 {{- else }}
     # Ref: https://github.com/openresty/openresty/#resolvconf-parsing
@@ -50,4 +50,4 @@ data:
       # server_name _;
       include /etc/nginx/conf.d/location.list;
     }
-{{ end }}
+{{- end }}
