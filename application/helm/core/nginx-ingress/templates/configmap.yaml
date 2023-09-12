@@ -76,3 +76,4 @@ data:
       include /etc/nginx/conf.d/location.list;
     }
 {{- end }}
+{{- end }}
