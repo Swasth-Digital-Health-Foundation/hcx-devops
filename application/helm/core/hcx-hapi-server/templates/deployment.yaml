@@ -31,7 +31,11 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
+          {{ if eq .Values.image.tag "" }}
+          image: "{{ .Values.hcx_hapi.image.repository }}"
+          {{ else }}
           image: "{{ .Values.hcx_hapi.image.repository }}:{{ .Values.hcx_hapi.image.tag | default .Chart.AppVersion }}"
+          {{ end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
