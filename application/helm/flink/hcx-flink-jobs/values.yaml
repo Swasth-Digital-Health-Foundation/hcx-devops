@@ -2,7 +2,7 @@ image:
   repository: "swasth2021/hcx-pipeline-jobs"
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "cd496db1_103"
+  tag: ""
 namespace: flink
 imagePullSecrets: []
 dockerhub: "swasth2021"
@@ -14,10 +14,12 @@ replicaCount: 1
 # job_classname: "org.swasth.dp.coverageeligiblitycheck.task.CoverageEligibilityCheckStreamTask"
 job_classname: "org.swasth.dp.claims.task.ClaimsStreamTask"
 
-taskManagerAdditionalArgs: []
+taskManagerAdditionalArgs:
+  []
   # For example
   # - -Dfs.azure.account.key.{{ .Values.azure_account }}.blob.core.windows.net={{ .Values.azure_secret }},
-jobManagerAdditionalArgs: []
+jobManagerAdditionalArgs:
+  []
   # For example
   # - -Dfs.azure.account.key.hcxapi.blob.core.windows.net=mysupersecretpassword
 
@@ -34,7 +36,7 @@ service:
   # If you want a private LB in azure, add the following
   # annotations:
   #   service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-  
+
 rest_port: "80"
 resttcp_port: "8081"
 
@@ -115,12 +117,12 @@ tolerations: {}
 affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          - key: app
-            operator: In
-            values:
-            - flink
-        topologyKey: topology.kubernetes.io/hostname
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - flink
+          topologyKey: topology.kubernetes.io/hostname

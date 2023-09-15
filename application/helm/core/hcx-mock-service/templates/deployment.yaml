@@ -40,7 +40,11 @@ spec:
           {{- end }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
+          {{ if eq .Values.image.tag "" }}
+          image: "{{ .Values.image.repository }}"
+          {{ else }}
           image: "{{ .Values.image.repository }}:{{ .Values.common.image.tag | default .Chart.AppVersion }}"
+          {{ end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -61,7 +65,7 @@ spec:
             successThreshold: 1
             timeoutSeconds: 1
           resources:
-            {{- toYaml .Values.hcx_registry.resources | nindent 12 }}
+            {{- toYaml .Values.hcx_mock_service.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

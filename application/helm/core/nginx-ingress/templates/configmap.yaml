@@ -5,9 +5,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
 data:
   location.list: |-
-{{- if .Values.location_list }}
+{{ if .Values.location_list }}
 {{ .Values.location_list | indent 4 }}
-{{- else }}
+{{ else }}
     location /healthz {
       return 200 'OK';
     }
@@ -53,9 +53,10 @@ data:
     }
 {{ end }}
   sites.conf: |-
-{{- if .Values.sites_conf }}
+{{ if .Values.sites_conf }}
+{{ if .Values.hcx_ssl.enabled }}
 {{ .Values.sites_conf | indent 4 }}
-{{- else }}
+{{ else }}
     # Ref: https://github.com/openresty/openresty/#resolvconf-parsing
     resolver local=on;
     # Need real ip address for flags in replay.
@@ -75,11 +76,5 @@ data:
       # server_name _;
       include /etc/nginx/conf.d/location.list;
     }
-     server {
-       listen              443 ssl;
-       server_name {{.Values.nginx_ingress.domainName}};
-       ssl_certificate     /etc/nginx/secrets/tls.crt;
-       ssl_certificate_key /etc/nginx/secrets/tls.key;
-       include /etc/nginx/conf.d/location.list;
-    }
+{{ end }}
 {{ end }}
