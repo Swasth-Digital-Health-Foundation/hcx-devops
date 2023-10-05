@@ -20,6 +20,12 @@ spec:
     spec:
       template:
         spec:
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          securityContext:
+            {{- toYaml .Values.podSecurityContext | nindent 8 }}
           serviceAccountName: hcx-functional-schedulers
           containers:
             - name: hcx-participant-validator
@@ -28,8 +34,8 @@ spec:
               - name: {{ $k }}
                 value: '{{ $v }}'
               {{- end }}
-              image: maheshkg/hcx-functional-scheduler:0.1
-              imagePullPolicy: Always
+              image: "{{ .Values.common_scheduler_jobs.image.repository }}:{{ .Values.common.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
               command:
                 - /bin/sh
                 - -c
@@ -57,8 +63,8 @@ spec:
               - name: {{ $k }}
                 value: '{{ $v }}'
               {{- end }}
-              image: maheshkg/hcx-functional-scheduler:0.1
-              imagePullPolicy: Always
+              image: "{{ .Values.common_scheduler_jobs.image.repository }}:{{ .Values.common.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
               command:
                 - /bin/sh
                 - -c
