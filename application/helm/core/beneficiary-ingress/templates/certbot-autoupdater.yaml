@@ -1,0 +1,126 @@
+# This is a cronjob for automatically update your letsencrypt certificate in kubernetes cluster.
+# Only dependency here is to have a domain path to ./well-known => this service (certbot:80)
+#
+# Note: this app should run in the same namespace as nginx-ingress.
+#
+# for example
+# `kubectl apply -f certbot-autoupdater.yaml -n dev`
+{{ if .Values.hcx_ssl.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-certbot
+  labels:
+    app: {{ .Release.Name }}-certbot
+spec:
+  schedule: "0 16 6 * *" # 10th of every month at 6:00 pm it's UTC -> translates in to 12.30 midnight IST
+  jobTemplate:
+    spec:
+      template:
+          metadata:
+            labels:
+              app: {{ .Release.Name }}-certbot
+          spec:
+            serviceAccountName: {{ .Release.Name }}-certbot
+            containers:
+            - name: {{ .Release.Name }}-certbot
+              image: swasth2021/certbot-autoupdater
+              resources:
+                limits:
+                  cpu: 100m
+                  memory: 200Mi
+              ports:
+              - containerPort: 80
+              env:
+                  - name: EMAIL
+                    value: {{ .Values.hcx_ssl.email }}
+                  - name: DOMAIN
+                    value: {{ .Values.hcx_ssl.domain }}
+                  - name: NAMESPACE
+                    value: {{ .Values.hcx_ssl.namespace }}
+              command:
+                - /bin/sh
+              args:
+                - /opt/renew.sh
+              volumeMounts:
+              - name: renewscript
+                mountPath: /opt/renew.sh
+                subPath: renew.sh
+            volumes:
+            - name: renewscript
+              configMap:
+                name: {{ .Release.Name }}-certbot
+            restartPolicy: Never
+      backoffLimit: 1
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-certbot
+data:
+  renew.sh: |-
+    catch_err(){
+    err_code=$1
+      [[ $err_code -eq 0 ]] || {
+        exit $err_code
+      }
+    }
+    certbot certonly --non-interactive --staging --dry-run --agree-tos -m $EMAIL -d $DOMAIN --standalone
+    catch_err $?
+    kubectl get secret {{ .Release.Name }}-hcx-ssl -o yaml -n $NAMESPACE > ssl.yaml
+    cat ssl.yaml | sed "s/ tls.crt: .*/ tls.crt: $(cat /etc/letsencrypt/live/${DOMAIN}/fullchain.pem | base64 | tr -d '\n')/g" | \
+                   sed "s/ tls.key: .*/ tls.key: $(cat /etc/letsencrypt/live/${DOMAIN}/privkey.pem |  base64 | tr -d '\n')/g" > file.yaml
+    catch_err $?
+    kubectl apply -f file.yaml
+    kubectl rollout restart deployment beneficiary-ingress  -n $NAMESPACE
+    kubectl rollout status deployment beneficiary-ingress  -n $NAMESPACE
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-certbot
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: {{ .Release.Name }}-certbot
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Release.Name }}-certbot
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Release.Name }}-certbot
+rules:
+- apiGroups:
+  - apps
+  resourceNames:
+  - beneficiary-ingress
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+  - watch
+  - patch
+- apiGroups: [""]
+  resources: ["secrets"]
+  resourceNames: ["{{ .Release.Name }}-hcx-ssl"]
+  verbs: ["*"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Release.Name }}-certbot
+subjects:
+- kind: ServiceAccount
+  name: {{ .Release.Name }}-certbot # Name is case sensitive
+roleRef:
+  kind: Role #this must be Role or ClusterRole
+  name: {{ .Release.Name }}-certbot # this must match the name of the Role or ClusterRole you wish to bind to
+  apiGroup: rbac.authorization.k8s.io
+{{ end }}
