@@ -64,12 +64,12 @@ spec:
       volumes: 
       - name: nginx
         configMap:
-          name: nginx-conf
+          name: {{ .Release.Name }}-conf
 {{- if .Values.hcx_ssl.enabled  }}
       - name: ssl
         secret:
           defaultMode: 420
-          secretName: hcx-ssl
+          secretName: {{ .Release.Name }}-hcx-ssl
 {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

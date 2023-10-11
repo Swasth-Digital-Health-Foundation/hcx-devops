@@ -65,15 +65,15 @@ data:
         exit $err_code
       }
     }
-    certbot certonly --non-interactive --staging --dry-run --agree-tos -m $EMAIL -d $DOMAIN --standalone
+    certbot certonly --non-interactive --agree-tos -m $EMAIL -d $DOMAIN --standalone
     catch_err $?
     kubectl get secret {{ .Release.Name }}-hcx-ssl -o yaml -n $NAMESPACE > ssl.yaml
     cat ssl.yaml | sed "s/ tls.crt: .*/ tls.crt: $(cat /etc/letsencrypt/live/${DOMAIN}/fullchain.pem | base64 | tr -d '\n')/g" | \
                    sed "s/ tls.key: .*/ tls.key: $(cat /etc/letsencrypt/live/${DOMAIN}/privkey.pem |  base64 | tr -d '\n')/g" > file.yaml
     catch_err $?
     kubectl apply -f file.yaml
-    kubectl rollout restart deployment beneficiary-ingress  -n $NAMESPACE
-    kubectl rollout status deployment beneficiary-ingress  -n $NAMESPACE
+    kubectl rollout restart deployment bsp-ingress  -n $NAMESPACE
+    kubectl rollout status deployment bsp-ingress  -n $NAMESPACE
 ---
 apiVersion: v1
 kind: Service
@@ -99,7 +99,7 @@ rules:
 - apiGroups:
   - apps
   resourceNames:
-  - beneficiary-ingress
+  - bsp-ingress
   resources:
   - deployments
   verbs:

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: beneficiary-nginx
+  name: {{ .Release.Name }}-conf
   namespace: {{ .Release.Namespace }}
 data:
   location.list: |-
@@ -28,14 +28,14 @@ location / {
     add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
     add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
  }
-  # proxy_http_version 1.1;
-  # proxy_set_header Connection "";
-  # proxy_set_header Upgrade $http_upgrade;
+  proxy_http_version 1.1;
+  proxy_set_header Connection "";
+  proxy_set_header Upgrade $http_upgrade;
   proxy_set_header Host dev-beneficiary-app.s3-website.ap-south-1.amazonaws.com;
   resolver 8.8.8.8;
   proxy_pass  http://dev-beneficiary-app.s3-website.ap-south-1.amazonaws.com/;
-  # proxy_ssl_name dev-beneficiary-app.s3-website.ap-south-1.amazonaws.com;
-  # proxy_ssl_server_name on;
+  proxy_ssl_name dev-beneficiary-app.s3-website.ap-south-1.amazonaws.com;
+  proxy_ssl_server_name on;
   }
 {{ end }}
   sites.conf: |-
