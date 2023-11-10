@@ -9,9 +9,9 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: dashboard-certbot
+  name: {{ .Release.Name }}-certbot
   labels:
-    app: dashboard-certbot
+    app: {{ .Release.Name }}-certbot
 spec:
   schedule: "0 16 6 * *" # 10th of every month at 6:00 pm it's UTC -> translates in to 12.30 midnight IST
   jobTemplate:
@@ -19,11 +19,11 @@ spec:
       template:
         metadata:
           labels:
-            app: dashboard-certbot
+            app: {{ .Release.Name }}-certbot
         spec:
-          serviceAccountName: dashboard-certbot
+          serviceAccountName: {{ .Release.Name }}-certbot
           containers:
-            - name: dashboard-certbot
+            - name: {{ .Release.Name }}-certbot
               image: swasth2021/certbot-autoupdater
               resources:
                 limits:
@@ -49,14 +49,14 @@ spec:
           volumes:
             - name: renewscript
               configMap:
-                name: dashboard-certbot
+                name: {{ .Release.Name }}-certbot
           restartPolicy: Never
-
+      backoffLimit: 1
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: dashboard-certbot
+  name: {{ .Release.Name }}-certbot
 data:
   renew.sh: |-
     catch_err(){
@@ -67,40 +67,39 @@ data:
     }
     certbot certonly --non-interactive --agree-tos -m $EMAIL -d $DOMAIN --standalone
     catch_err $?
-    kubectl get secret hcx-dashboard-ssl -o yaml -n $NAMESPACE > ssl.yaml
+    kubectl get secret hcx-{{ .Release.Name }}-ssl -o yaml -n $NAMESPACE > ssl.yaml
     cat ssl.yaml | sed "s/ tls.crt: .*/ tls.crt: $(cat /etc/letsencrypt/live/${DOMAIN}/fullchain.pem | base64 | tr -d '\n')/g" | \
                    sed "s/ tls.key: .*/ tls.key: $(cat /etc/letsencrypt/live/${DOMAIN}/privkey.pem |  base64 | tr -d '\n')/g" > file.yaml
     catch_err $?
     kubectl apply -f file.yaml
-    kubectl rollout restart deployment dashboard-ingress -n $NAMESPACE
-    kubectl rollout status deployment dashboard-ingress -n $NAMESPACE
-
+    kubectl rollout restart deployment {{ .Release.Name }}-ingress -n $NAMESPACE
+    kubectl rollout status deployment {{ .Release.Name }}-ingress -n $NAMESPACE
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: dashboard-certbot
+  name: {{ .Release.Name }}-certbot
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app: dashboard-certbot
+    app: {{ .Release.Name }}-certbot
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: dashboard-certbot
+  name: {{ .Release.Name }}-certbot
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: dashboard-certbot
+  name: {{ .Release.Name }}-certbot
 rules:
   - apiGroups:
       - apps
     resourceNames:
-      - dashboard-ingress
+      - {{ .Release.Name }}-ingress
     resources:
       - deployments
     verbs:
@@ -110,18 +109,18 @@ rules:
       - patch
   - apiGroups: [""]
     resources: ["secrets"]
-    resourceNames: ["hcx-dashboard-ssl"]
+    resourceNames: ["hcx-{{ .Release.Name }}-ssl"]
     verbs: ["*"]
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: dashboard-certbot
+  name: {{ .Release.Name }}-certbot
 subjects:
   - kind: ServiceAccount
-    name: dashboard-certbot # Name is case sensitive
+    name: {{ .Release.Name }}-certbot # Name is case sensitive
 roleRef:
   kind: Role #this must be Role or ClusterRole
-  name: dashboard-certbot # this must match the name of the Role or ClusterRole you wish to bind to
+  name: {{ .Release.Name }}-certbot # this must match the name of the Role or ClusterRole you wish to bind to
   apiGroup: rbac.authorization.k8s.io
 {{ end }}
