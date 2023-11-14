@@ -72,8 +72,8 @@ data:
                    sed "s/ tls.key: .*/ tls.key: $(cat /etc/letsencrypt/live/${DOMAIN}/privkey.pem |  base64 | tr -d '\n')/g" > file.yaml
     catch_err $?
     kubectl apply -f file.yaml
-    kubectl rollout restart deployment {{ .Release.Name }}-ingress -n $NAMESPACE
-    kubectl rollout status deployment {{ .Release.Name }}-ingress -n $NAMESPACE
+    kubectl rollout restart deployment {{ .Release.Name }} -n $NAMESPACE
+    kubectl rollout status deployment {{ .Release.Name }} -n $NAMESPACE
 ---
 apiVersion: v1
 kind: Service
