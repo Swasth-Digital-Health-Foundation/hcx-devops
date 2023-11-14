@@ -67,7 +67,7 @@ data:
     }
     certbot certonly --non-interactive --agree-tos -m $EMAIL -d $DOMAIN --standalone
     catch_err $?
-    kubectl get secret hcx-{{ .Release.Name }}-ssl -o yaml -n $NAMESPACE > ssl.yaml
+    kubectl get secret hcx-dashboard-ssl -o yaml -n $NAMESPACE > ssl.yaml
     cat ssl.yaml | sed "s/ tls.crt: .*/ tls.crt: $(cat /etc/letsencrypt/live/${DOMAIN}/fullchain.pem | base64 | tr -d '\n')/g" | \
                    sed "s/ tls.key: .*/ tls.key: $(cat /etc/letsencrypt/live/${DOMAIN}/privkey.pem |  base64 | tr -d '\n')/g" > file.yaml
     catch_err $?
