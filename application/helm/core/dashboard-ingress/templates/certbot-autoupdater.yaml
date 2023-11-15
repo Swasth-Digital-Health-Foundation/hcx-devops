@@ -109,7 +109,7 @@ rules:
       - patch
   - apiGroups: [""]
     resources: ["secrets"]
-    resourceNames: ["hcx-{{ .Release.Name }}-ssl"]
+    resourceNames: ["hcx-dashboard-ssl"]
     verbs: ["*"]
 ---
 kind: RoleBinding
