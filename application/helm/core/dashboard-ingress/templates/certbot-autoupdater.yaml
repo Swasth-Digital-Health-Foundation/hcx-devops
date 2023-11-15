@@ -1,57 +1,49 @@
-# This is a cronjob for automatically update your letsencrypt certificate in kubernetes cluster.
-# Only dependency here is to have a domain path to ./well-known => this service (certbot:80)
-#
-# Note: this app should run in the same namespace as dashboard-ingress.
-#
-# for example
-# `kubectl apply -f certbot-autoupdater.yaml -n dev`
 {{ if .Values.hcx_ssl.enabled }}
-apiVersion: batch/v1
-kind: CronJob
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: {{ .Release.Name }}-certbot
   labels:
     app: {{ .Release.Name }}-certbot
 spec:
-  schedule: "0 16 6 * *" # 10th of every month at 6:00 pm it's UTC -> translates in to 12.30 midnight IST
-  jobTemplate:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-certbot
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-certbot
     spec:
-      template:
-        metadata:
-          labels:
-            app: {{ .Release.Name }}-certbot
-        spec:
-          serviceAccountName: {{ .Release.Name }}-certbot
-          containers:
-            - name: {{ .Release.Name }}-certbot
-              image: swasth2021/certbot-autoupdater
-              resources:
-                limits:
-                  cpu: 100m
-                  memory: 200Mi
-              ports:
-                - containerPort: 80
-              env:
-                - name: EMAIL
-                  value: {{ .Values.hcx_ssl.email }}
-                - name: DOMAIN
-                  value: {{ .Values.hcx_ssl.domain }}
-                - name: NAMESPACE
-                  value: {{ .Values.hcx_ssl.namespace }}
-              command:
-                - /bin/sh
-              args:
-                - /opt/renew.sh
-              volumeMounts:
-                - name: renewscript
-                  mountPath: /opt/renew.sh
-                  subPath: renew.sh
-          volumes:
+      serviceAccountName: {{ .Release.Name }}-certbot
+      containers:
+        - name: {{ .Release.Name }}-certbot
+          image: swasth2021/certbot-autoupdater
+          resources:
+            limits:
+              cpu: 100m
+              memory: 200Mi
+          ports:
+            - containerPort: 80
+          env:
+            - name: EMAIL
+              value: {{ .Values.hcx_ssl.email }}
+            - name: DOMAIN
+              value: {{ .Values.hcx_ssl.domain }}
+            - name: NAMESPACE
+              value: {{ .Values.hcx_ssl.namespace }}
+          command:
+            - /bin/sh
+          args:
+            - /opt/renew.sh
+          volumeMounts:
             - name: renewscript
-              configMap:
-                name: {{ .Release.Name }}-certbot
-          restartPolicy: Never
-      backoffLimit: 1
+              mountPath: /opt/renew.sh
+              subPath: renew.sh
+      volumes:
+        - name: renewscript
+          configMap:
+            name: {{ .Release.Name }}-certbot
 ---
 apiVersion: v1
 kind: ConfigMap
