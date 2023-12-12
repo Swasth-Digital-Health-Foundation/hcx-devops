@@ -1,16 +1,16 @@
 variable "env" {
-  default = "dev"
+  default = "experiment"
 }
 
 variable "AWS_REGION" {
   default = "ap-south-1"
 }
 variable "AWS_PROFILE" {
-  default = "target_hcx"
+  default = "hcx-dev"
 }
 
 variable "instance_type" {
-  default = "t3.large"
+  default = "t3.medium"
 }
 
 variable "ami" {
@@ -20,7 +20,7 @@ variable "ami" {
 variable "ec2" {
   type = map(string)
   default = {
-    "kafka" = "t3.large",
+    "experiment-es" = "t3.medium",
   }
 }
 

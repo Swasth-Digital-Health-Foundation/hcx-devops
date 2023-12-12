@@ -6,29 +6,29 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: hcx-dev-1-27
+  name: hcx-expriment-1-27
   region: ap-south-1
   version: "1.27"
 
 vpc:
-  id: "vpc-0a7e986d70910cfea"
+  id: "vpc-0fcebeccfd1cf14c6"
   cidr: "10.0.0.0/16" # (optional, must match CIDR used by the given VPC)
   subnets:
     # must provide 'private' and/or 'public' subnets by availibility zone as shown
     private:
       ap-south-1a:
-        id: "subnet-014b5098734fdee8d"
+        id: "subnet-0c18114637b64646a"
       ap-south-1b:
-        id: "subnet-0e73e90b733ba4b93"
+        id: "subnet-0e60518fe4f727956"
       ap-south-1c:
-        id: "subnet-0040a579a90d12901"
+        id: "subnet-0761ea004a52f3d19"
     public:
       ap-south-1a:
-        id: "subnet-0e871951cc34ed8d8"
+        id: "subnet-0f95b4a8572e915eb"
       ap-south-1b:
-        id: "subnet-0bd3ff817160f4676"
+        id: "subnet-011e08d9da3c45bab"
       ap-south-1c:
-        id: "subnet-0b2132d251a914455"
+        id: "subnet-00b42b378ee8fa9ae"
 
 iam:
   withOIDC: true
@@ -39,18 +39,18 @@ iam:
         labels: { aws-usage: "cluster-ops" }
       wellKnownPolicies:
         autoScaler: true
-      roleName: eksctl-cluster-autoscaler-dev-role
+      roleName: eksctl-cluster-autoscaler-experiment-role
       roleOnly: true
 managedNodeGroups:
   - name: managed-ng-1
     # EC2 tags required for cluster-autoscaler auto-discovery
     tags:
       k8s.io/cluster-autoscaler/enabled: "true"
-      k8s.io/cluster-autoscaler/dev-cluster: "owned"
+      k8s.io/cluster-autoscaler/experiment-cluster: "owned"
     instanceType: t3.medium
     securityGroups:
       attachIDs:
-        - "sg-04607f5bbc4b9fd30"
+        - "sg-0fda8d65c91e0501c"
     minSize: 1
     maxSize: 2
     desiredCapacity: 1
@@ -62,12 +62,12 @@ managedNodeGroups:
         autoScaler: true
         ebs: true
 fargateProfiles:
-  - name: fargate-hcx-dev-eks
+  - name: fargate-hcx-experiment-eks
     selectors:
       # All workloads in the "kube-system" Kubernetes namespace will be
       # scheduled onto Fargate:
       - namespace: kube-system
-    # - name: fp-hcx-dev
+    # - name: fp-hcx-experiment
     #   selectors:
     #     # All workloads in the "cicd" Kubernetes namespace matching the following
     #     # label selectors will be scheduled onto Fargate:
@@ -80,12 +80,12 @@ addons:
     # all below properties are optional
     version: v1.20.0-eksbuild.1
     tags:
-      env: hcx-dev
-      name: fp-hcx-dev
+      env: hcx-experiment
+      name: fp-hcx-experiment
   - name: vpc-cni
     attachPolicyARNs:
       - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
     version: v1.13.4-eksbuild.1
     tags:
-      env: hcx-dev
-      name: fp-hcx-dev
+      env: hcx-experiment
+      name: fp-hcx-experiment
