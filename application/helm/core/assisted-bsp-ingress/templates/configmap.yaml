@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: assisted-ingress-conf
+  name: assisted-bsp-ingress-conf
   namespace: {{ .Release.Namespace }}
 data:
   location.list: |-
