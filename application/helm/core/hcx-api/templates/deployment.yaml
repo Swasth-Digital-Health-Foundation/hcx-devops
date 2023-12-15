@@ -37,9 +37,9 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           {{ if eq .Values.image.tag "" }}
-          image: "{{ .Values.hcx_api.image.repository }}"
+          image: "{{ .Values.image.repository }}"
           {{ else }}
-          image: "{{ .Values.hcx_api.image.repository }}:{{ .Values.common.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           {{ end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -47,7 +47,7 @@ spec:
               containerPort: 8080
               protocol: TCP
           resources:
-            {{- toYaml .Values.hcx_api.resources | nindent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
           - name: secrets-realm
             mountPath: /config/keys
