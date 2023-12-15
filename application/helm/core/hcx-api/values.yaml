@@ -8,7 +8,7 @@ image:
   repository: swasth2021/hcx-apis
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "7bcf2018_37"
+  tag: "6731fde8_134"
 
 imagePullSecrets: []
 nameOverride: ""
