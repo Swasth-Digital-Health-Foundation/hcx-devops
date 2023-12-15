@@ -8,7 +8,7 @@ image:
   repository: swasth2021/registry
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "40fc02e_10"
+  tag: "518dcc91_47"
 
 imagePullSecrets: []
 nameOverride: ""
