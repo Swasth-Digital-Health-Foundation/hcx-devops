@@ -6,7 +6,7 @@ metadata:
     {{- include "api-gateway.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.api_gateway.replicaCount }}
+  replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
@@ -37,11 +37,11 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           {{ if eq .Values.image.tag "" }}
-          image: "{{ .Values.api_gateway.image.repository }}"
+          image: "{{ .Values.image.repository }}"
           {{ else }}
-          image: "{{ .Values.api_gateway.image.repository }}:{{ .Values.common.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values..image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           {{ end }}
-          imagePullPolicy: {{ .Values.api_gateway.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
               containerPort: 8095
