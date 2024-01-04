@@ -1501,7 +1501,26 @@ provisioning:
   ## @param provisioning.topics Kafka topics to provision
 
   topics: 
-  - name: ""
+  - name: "dev.hcx.audit"
+  - name: "dev.hcx.protocol.request.processor" 
+  - name: "dev.hcx.request.claim"
+  - name: "dev.hcx.request.communication"
+  - name: "dev.hcx.request.coverageeligibility"
+  - name: "dev.hcx.request.ingest"
+  - name: "dev.hcx.request.message"
+  - name: "dev.hcx.request.notification"
+  - name: "dev.hcx.request.onsubscription"
+  - name: "dev.hcx.request.payload"
+  - name: "dev.hcx.request.payment"
+  - name: "dev.hcx.request.preauth"
+  - name: "dev.hcx.request.predetermination"
+  - name: "dev.hcx.request.retry"
+  - name: "dev.hcx.request.search"
+  - name: "dev.hcx.request.status.search"
+  - name: "dev.hcx.request.subscription"
+  - name: "dev.hcx.response.search"
+  - name: "dev.ingest"
+  - name: "dev.masterdata.ingest"
     partitions: 1
     replicationFactor: 1
 
