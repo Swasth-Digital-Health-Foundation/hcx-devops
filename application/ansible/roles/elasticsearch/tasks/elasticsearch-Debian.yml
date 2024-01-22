@@ -65,7 +65,8 @@
 
 - name: Include optional user and group creation.
   when: (es_user_id is defined) and (es_group_id is defined)
-  include: elasticsearch-optional-user.yml
+  import_tasks: elasticsearch-optional-user.yml
+
 
 - name: Debian - Get installed elasticsearch version
   command: dpkg-query --showformat='${Version}' --show {{ es_package_name }}
@@ -74,12 +75,34 @@
   changed_when: False
   check_mode: no
 
+- name: Debug Information
+  debug:
+    var: installed_es_version
+
+- name: Debian - Ensure elasticsearch is installed
+  become: yes
+  apt:
+    name: '{{ es_package_name }}{% if es_version is defined and es_version != "" %}={{ es_version }}{% endif %}'
+    state: present
+    force: '{{ force_install }}'
+    allow_unauthenticated: "{{ 'no' if es_apt_key else 'yes' }}"
+    cache_valid_time: 86400
+  when: es_use_repository
+  register: debian_elasticsearch_install_from_repo
+  notify: restart elasticsearch
+  environment:
+    ES_PATH_CONF: "{{ es_conf_dir }}"  
+
 - name: Debian - unhold elasticsearch version
   become: yes
   dpkg_selections:
     name: "{{ es_package_name }}"
     selection: "install"
   when: not es_version_lock or (installed_es_version.stdout and installed_es_version.stdout != es_version)
+
+- name: Debug Information
+  debug:
+    var: installed_es_version
 
 - name: Debian - Ensure elasticsearch is installed
   become: yes
@@ -104,7 +127,7 @@
 
 # workaround due to https://github.com/ansible/ansible/issues/66977
 - set_fact:
-    es_deb_url: "{% if es_version is version('7.0.0', '>=') %}{{ es_package_url }}-{{ es_version }}-amd64.deb{% else %}{{ es_package_url }}-{{ es_version }}.deb{% endif %}"
+    es_deb_url: "{% if es_version is version('7.0.0', '>=') %}{{ es_package_url }}-7.16.1-amd64.deb{% else %}{{ es_package_url }}-7.16.1.deb{% endif %}"
 
 - name: Debian - Install Elasticsearch from url
   become: yes

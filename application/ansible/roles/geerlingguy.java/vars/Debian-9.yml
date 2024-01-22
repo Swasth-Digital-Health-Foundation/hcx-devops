@@ -1,5 +1,5 @@
 ---
-# JDK version options include:
+# JDK version options import_tasks:
 #   - java
 #   - openjdk-8-jdk
 __java_packages:

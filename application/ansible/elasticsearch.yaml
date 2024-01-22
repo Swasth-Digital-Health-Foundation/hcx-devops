@@ -2,7 +2,7 @@
   become: yes
   vars:
     es_version: 7.16.1
-    es_heap_size: "{{ es_heap_size_override | d('4g') }}"
+    es_heap_size: "{{ es_heap_size_override | d('8g') }}"
   roles:
     - geerlingguy.java
     - { role: elasticsearch,
@@ -18,8 +18,6 @@
           node.master: "{{ es_etc_node_master | default('true') }}",
           cluster.initial_master_nodes: "{{ groups['elasticsearch'] }}",
           bootstrap.memory_lock: true,
-          es_api_basic_auth_username: elastic,
-          es_api_basic_auth_password: changeme
         },
         es_etc_discovery_zen_ping_unicast_hosts: "{{ groups['elasticsearch'] }}",
       }

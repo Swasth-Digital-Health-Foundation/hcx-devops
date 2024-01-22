@@ -28,7 +28,7 @@
   environment:
     CONF_DIR: "{{ es_conf_dir }}"
     ES_PATH_CONF: "{{ es_conf_dir }}"
-    ES_INCLUDE: "{{ default_file }}"
+    ES_import_tasks: "{{ default_file }}"
   check_mode: no
 
 #if es_plugins_reinstall is set to true we remove ALL plugins
@@ -61,7 +61,7 @@
   environment:
     CONF_DIR: "{{ es_conf_dir }}"
     ES_PATH_CONF: "{{ es_conf_dir }}"
-    ES_INCLUDE: "{{ default_file }}"
+    ES_import_tasks: "{{ default_file }}"
 
 - name: Install elasticsearch plugins
   become: yes
@@ -74,7 +74,7 @@
   environment:
     CONF_DIR: "{{ es_conf_dir }}"
     ES_PATH_CONF: "{{ es_conf_dir }}"
-    ES_INCLUDE: "{{ default_file }}"
+    ES_import_tasks: "{{ default_file }}"
   until: plugin_installed.rc|default(0) == 0
   retries: 5
   delay: 5

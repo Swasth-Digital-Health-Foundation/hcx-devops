@@ -1,4 +1,4 @@
-env: dev
+env: es-testing
 docker_repo: swasth2021
 keycloak_postgresql_host: ""
 keycloak_postgresql_user: ""
