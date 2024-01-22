@@ -2,7 +2,7 @@
   become: yes
   vars:
     es_version: 7.16.1
-    es_heap_size: "{{ es_heap_size_override | d('8g') }}"
+    es_heap_size: "{{ es_heap_size_override | d('4g') }}"
   roles:
     - geerlingguy.java
     - { role: elasticsearch,
