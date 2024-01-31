@@ -77,6 +77,10 @@ metadata:
   name: {{ .Release.Name }}-jobmanager
   namespace: {{ .Values.namespace }}
 spec:
+  selector:
+    matchLabels:
+      app: flink
+      component: {{ .Release.Name }}-jobmanager
   template:
     metadata:
       labels:
@@ -102,7 +106,7 @@ spec:
       - name: flink-notification-volume
         configMap:
           name: {{ .Release.Name }}-masterdata-configmap
-      restartPolicy: Always
+      restartPolicy: OnFailure
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
