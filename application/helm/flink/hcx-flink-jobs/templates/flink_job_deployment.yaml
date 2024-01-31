@@ -106,7 +106,7 @@ spec:
       - name: flink-notification-volume
         configMap:
           name: {{ .Release.Name }}-masterdata-configmap
-      restartPolicy: OnFailure
+      restartPolicy: Always
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
