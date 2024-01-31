@@ -105,7 +105,7 @@ spec:
             path: log4j-console.properties
       - name: flink-notification-volume
         configMap:
-          name: {{ .Release.Name }}-masterdata-configmap
+          name: {{ .Release.Name }}-config
       restartPolicy: Always
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
