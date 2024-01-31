@@ -97,7 +97,7 @@ spec:
       {{- if .Values.hcx_pipeline_jobs.enable_distributed_checkpointing -}}
       serviceAccount: {{ .Release.Namespace }}-sa
       {{- end }}
-      restartPolicy: OnFailure
+      restartPolicy: Always
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
