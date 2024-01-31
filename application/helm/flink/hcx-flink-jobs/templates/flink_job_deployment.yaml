@@ -81,7 +81,7 @@ spec:
   selector:
     matchLabels:
       app: flink
-      component: {{ .Release.Name }}-taskmanager
+      component: {{ .Release.Name }}-jobmanager
   template:
     metadata:
       labels:
@@ -107,7 +107,6 @@ spec:
       - name: flink-notification-volume
         configMap:
           name: {{ .Release.Name }}-masterdata-configmap
-      restartPolicy: OnFailure
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -168,6 +167,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 10 }}
       {{- end }}
+
 ---
 apiVersion: apps/v1
 kind: Deployment
