@@ -12,7 +12,7 @@ serviceMonitor:
 replicaCount: 1
 
 # job_classname: "org.swasth.dp.coverageeligiblitycheck.task.CoverageEligibilityCheckStreamTask"
-job_classname: "org.swasth.dp.claims.task.ClaimsStreamTask"
+job_classname: "org.swasth.dp.task.ProtocolRequestProcessorStreamTask"
 
 taskManagerAdditionalArgs:
   []
