@@ -1,3 +1,15 @@
+[kafka-1]
+10.0.1.196
+
+[zookeeper-1]
+10.0.1.196
+
+[zookeeper:children]
+zookeeper-1
+
+[kafka:children]
+kafka-1
+
 [elasticsearch-1]
 10.0.1.18
 
