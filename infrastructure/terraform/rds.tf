@@ -40,13 +40,13 @@ resource "aws_security_group" "allow_postgres" {
 
 resource "aws_db_instance" "rds" {
   engine                = "postgres"
-  engine_version        = "11.12"
+  engine_version        = "13.7"
   instance_class        = "db.t3.large"
   allocated_storage     = 20
   max_allocated_storage = 100
   db_subnet_group_name  = module.vpc.database_subnet_group
   skip_final_snapshot   = true
-  name                  = "postgresql"
+  identifier            = "postgresql"
   username              = "hcxpostgresql"
   password              = var.postgres_password
   port                  = 5432
