@@ -20,6 +20,8 @@ elasticsearch-1
 localhost ansible_connection=local
 
 [dev:children]
+kafka
+zookeeper
 elasticsearch
 local
 
