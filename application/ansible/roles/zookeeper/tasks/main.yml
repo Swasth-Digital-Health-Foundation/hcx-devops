@@ -6,8 +6,8 @@
 - name: Setup user
   user: name={{ zookeeper_user }} system=yes group={{ zookeeper_user }}
 
-- include: Debian.yml
+- import_tasks: Debian.yml
   when: ansible_os_family == 'Debian'
 
-- include: RedHat.yml
+- import_tasks: RedHat.yml
   when: ansible_os_family == 'RedHat'

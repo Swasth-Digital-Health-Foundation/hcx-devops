@@ -1485,6 +1485,8 @@ metrics:
     groups: []
 
 ## @section Kafka provisioning parameters
+env: dev
+
 
 ## Kafka provisioning
 ##
@@ -1501,7 +1503,26 @@ provisioning:
   ## @param provisioning.topics Kafka topics to provision
 
   topics: 
-  - name: ""
+  - name: "{{ .Values.env }}.hcx.audit"
+  - name: "{{ .Values.env }}.hcx.protocol.request.processor" 
+  - name: "{{ .Values.env }}.hcx.request.claim"
+  - name: "{{ .Values.env }}.hcx.request.communication"
+  - name: "{{ .Values.env }}.hcx.request.coverageeligibility"
+  - name: "{{ .Values.env }}.hcx.request.ingest"
+  - name: "{{ .Values.env }}.hcx.request.message"
+  - name: "{{ .Values.env }}.hcx.request.notification"
+  - name: "{{ .Values.env }}.hcx.request.onsubscription"
+  - name: "{{ .Values.env }}.hcx.request.payload"
+  - name: "{{ .Values.env }}.hcx.request.payment"
+  - name: "{{ .Values.env }}.hcx.request.preauth"
+  - name: "{{ .Values.env }}.hcx.request.predetermination"
+  - name: "{{ .Values.env }}.hcx.request.retry"
+  - name: "{{ .Values.env }}.hcx.request.search"
+  - name: "{{ .Values.env }}.hcx.request.status.search"
+  - name: "{{ .Values.env }}.hcx.request.subscription"
+  - name: "{{ .Values.env }}.hcx.response.search"
+  - name: "{{ .Values.env }}.ingest"
+  - name: "{{ .Values.env }}.masterdata.ingest"
     partitions: 1
     replicationFactor: 1
 

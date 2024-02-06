@@ -1,5 +1,5 @@
 ---
-# JDK version options include:
+# JDK version options import_tasks:
 #   - java-1.8.0-openjdk
 #   - java-11-openjdk
 #   - java-latest-openjdk
