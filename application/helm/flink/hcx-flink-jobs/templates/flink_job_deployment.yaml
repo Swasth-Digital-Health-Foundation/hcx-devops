@@ -105,10 +105,12 @@ spec:
       {{- end }}
       restartPolicy: Always     
       containers:
-      - name: flink-notification-volume
-        configMap:
-          name: {{ .Release.Name }}-config
-      {{- with .Values.imagePullSecrets }}
+      - name: {{ .Release.Name }}-jobmanager
+        {{ if eq .Values.image.tag "" }}
+        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}"
+        {{ else }}
+        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}:{{ .Values.image.tag }}"
+        {{ end }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
