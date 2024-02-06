@@ -73,7 +73,7 @@ metadata:
   namespace: {{ .Values.namespace }}
 spec:
   spec:
-  replicas: {{ .Values.jobamanager.replicas }}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: flink
