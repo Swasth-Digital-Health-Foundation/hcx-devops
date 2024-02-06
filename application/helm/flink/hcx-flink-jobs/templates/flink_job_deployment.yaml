@@ -72,11 +72,12 @@ metadata:
   name: {{ .Release.Name }}-jobmanager
   namespace: {{ .Values.namespace }}
 spec:
-  replicas: {{ .Values.taskmanager.replicas }}
+  spec:
+  replicas: {{ .Values.jobamanager.replicas }}
   selector:
     matchLabels:
       app: flink
-      component: {{ .Release.Name }}-jobmanager
+      component: {{ .Release.Name }}-jobamanager
   template:
     metadata:
       labels:
@@ -100,14 +101,14 @@ spec:
           - key: log4j_console_properties
             path: log4j-console.properties
       {{- if .Values.hcx_pipeline_jobs.enable_distributed_checkpointing -}}
-      spec:
-        serviceAccount: {{ .Release.Namespace }}-sa
+      serviceAccount: {{ .Release.Namespace }}-sa
       {{- end }}
-      restartPolicy: Always   
+      restartPolicy: OnFailure
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- $name := .Release.Name }}  
+      {{- $name := .Release.Name }}
       containers:
       - name: {{ .Release.Name }}-jobmanager
         {{ if eq .Values.image.tag "" }}
@@ -156,11 +157,9 @@ spec:
         - name: flink-config-volume
           mountPath: /opt/flink/conf/log4j-console.properties
           subPath: log4j-console.properties
-        - name: flink-notification-volume
-          mountPath: /data/flink/conf/master_data
         resources:
 {{ toYaml .Values.hcx_pipeline_jobs.jobmanagerResources | indent 10 }}
-      {{- with .Values.affinity }}
+        {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 10 }}
       {{- end }}
@@ -168,7 +167,6 @@ spec:
       tolerations:
         {{- toYaml . | nindent 10 }}
       {{- end }}
-
 ---
 apiVersion: apps/v1
 kind: Deployment
