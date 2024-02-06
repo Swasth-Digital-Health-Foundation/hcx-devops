@@ -103,7 +103,7 @@ spec:
       spec:
         serviceAccount: {{ .Release.Namespace }}-sa
       {{- end }}
-      restartPolicy: OnFailure        
+      restartPolicy: Always     
       containers:
       - name: flink-notification-volume
         configMap:
