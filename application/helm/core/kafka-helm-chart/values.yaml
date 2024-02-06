@@ -1485,6 +1485,8 @@ metrics:
     groups: []
 
 ## @section Kafka provisioning parameters
+env: dev
+
 
 ## Kafka provisioning
 ##
@@ -1499,7 +1501,6 @@ provisioning:
   ##
   replicationFactor: 1
   ## @param provisioning.topics Kafka topics to provision
-  env: dev
 
   topics: 
   - name: "{{ .Values.env }}.hcx.audit"
