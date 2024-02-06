@@ -103,7 +103,11 @@ spec:
       spec:
         serviceAccount: {{ .Release.Namespace }}-sa
       {{- end }}
-      restartPolicy: Always     
+      restartPolicy: Always   
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- $name := .Release.Name }}  
       containers:
       - name: {{ .Release.Name }}-jobmanager
         {{ if eq .Values.image.tag "" }}
