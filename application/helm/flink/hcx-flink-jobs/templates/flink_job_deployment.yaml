@@ -99,6 +99,10 @@ spec:
             path: {{ .Release.Name }}.conf
           - key: log4j_console_properties
             path: log4j-console.properties
+    {{- if .Values.hcx_pipeline_jobs.enable_distributed_checkpointing -}}
+      serviceAccount: {{ .Release.Namespace }}-sa
+      {{- end }}
+      restartPolicy: OnFailure        
       - name: flink-notification-volume
         configMap:
           name: {{ .Release.Name }}-config
@@ -107,14 +111,17 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-      - name: {{ .Release.Name }}-jobmanager
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+      {{ if eq .Values.image.tag "" }}
+        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}"
+        {{ else }}
+        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}:{{ .Values.image.tag }}"
+        {{ end }}
         imagePullPolicy: Always
         workingDir: /opt/flink
         command: ["/opt/flink/bin/standalone-job.sh"]
         args:
         - start-foreground
-        - --job-classname={{ .Values.job_classname }}
+        - --job-classname={{ index .Values $name "job_classname" }}
         - -Dweb.submit.enable=false
         - -Dmetrics.reporter.prom.class=org.apache.flink.metrics.prometheus.PrometheusReporter
         - -Dmetrics.reporter.prom.port={{ .Values.jobmanager.prom_port }}
@@ -153,7 +160,7 @@ spec:
         - name: flink-notification-volume
           mountPath: /data/flink/conf/master_data
         resources:
-{{ toYaml .Values.jobmanagerResources | indent 10 }}
+{{ toYaml .Values.hcx_pipeline_jobs.jobmanagerResources | indent 10 }}
         {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 10 }}
