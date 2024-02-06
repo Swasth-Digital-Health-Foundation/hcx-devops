@@ -72,6 +72,11 @@ metadata:
   name: {{ .Release.Name }}-jobmanager
   namespace: {{ .Values.namespace }}
 spec:
+  replicas: {{ .Values.taskmanager.replicas }}
+  selector:
+    matchLabels:
+      app: flink
+      component: {{ .Release.Name }}-jobmanager
   template:
     metadata:
       labels:
@@ -94,28 +99,22 @@ spec:
             path: {{ .Release.Name }}.conf
           - key: log4j_console_properties
             path: log4j-console.properties
-      {{- if .Values.hcx_pipeline_jobs.enable_distributed_checkpointing -}}
-      serviceAccount: {{ .Release.Namespace }}-sa
-      {{- end }}
-      restartPolicy: OnFailure
+      - name: flink-notification-volume
+        configMap:
+          name: {{ .Release.Name }}-config
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- $name := .Release.Name }}
       containers:
       - name: {{ .Release.Name }}-jobmanager
-        {{ if eq .Values.image.tag "" }}
-        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}"
-        {{ else }}
-        image: "{{ .Values.hcx_pipeline_jobs.image.repository }}:{{ .Values.image.tag }}"
-        {{ end }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: Always
         workingDir: /opt/flink
         command: ["/opt/flink/bin/standalone-job.sh"]
         args:
         - start-foreground
-        - --job-classname={{ index .Values $name "job_classname" }}
+        - --job-classname={{ .Values.job_classname }}
         - -Dweb.submit.enable=false
         - -Dmetrics.reporter.prom.class=org.apache.flink.metrics.prometheus.PrometheusReporter
         - -Dmetrics.reporter.prom.port={{ .Values.jobmanager.prom_port }}
@@ -151,8 +150,10 @@ spec:
         - name: flink-config-volume
           mountPath: /opt/flink/conf/log4j-console.properties
           subPath: log4j-console.properties
+        - name: flink-notification-volume
+          mountPath: /data/flink/conf/master_data
         resources:
-{{ toYaml .Values.hcx_pipeline_jobs.jobmanagerResources | indent 10 }}
+{{ toYaml .Values.jobmanagerResources | indent 10 }}
         {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 10 }}
@@ -161,6 +162,8 @@ spec:
       tolerations:
         {{- toYaml . | nindent 10 }}
       {{- end }}
+
+
 ---
 apiVersion: apps/v1
 kind: Deployment
