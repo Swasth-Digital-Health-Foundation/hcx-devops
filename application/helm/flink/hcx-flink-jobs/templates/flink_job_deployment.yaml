@@ -77,7 +77,7 @@ spec:
   selector:
     matchLabels:
       app: flink
-      component: {{ .Release.Name }}-jobamanager
+      component: {{ .Release.Name }}-jobmanager
   template:
     metadata:
       labels:
