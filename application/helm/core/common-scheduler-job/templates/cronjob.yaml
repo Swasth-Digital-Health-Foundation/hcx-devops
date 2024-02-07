@@ -20,20 +20,20 @@ spec:
     spec:
       template:
         spec:
-          {{- with .Values.imagePullSecrets }}
+{{- with .Values.imagePullSecrets }}
           imagePullSecrets:
-            {{- toYaml . | nindent 8 }}
-          {{- end }}
+{{ toYaml . | indent 12 }}
+{{- end }}
           securityContext:
-            {{- toYaml .Values.podSecurityContext | nindent 8 }}
+{{ toYaml .Values.podSecurityContext | indent 12 }}
           serviceAccountName: hcx-functional-schedulers
           containers:
             - name: hcx-participant-validator
               env:
-              {{- range $k, $v := .Values.common_scheduler_jobs }}
+{{- range $k, $v := .Values.common_scheduler_jobs }}
               - name: {{ $k }}
                 value: '{{ $v }}'
-              {{- end }}
+{{- end }}
               image: "{{ .Values.common_scheduler_jobs.image.repository }}:{{ .Values.common.image.tag | default .Chart.AppVersion }}"
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               command:
@@ -41,6 +41,7 @@ spec:
                 - -c
                 - date; java -version; java -jar app.jar ParticipantValidation
           restartPolicy: OnFailure
+
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -59,10 +60,10 @@ spec:
           containers:
             - name: hcx-retry-requests
               env:
-              {{- range $k, $v := .Values.common_scheduler_jobs }}
+{{- range $k, $v := .Values.common_scheduler_jobs }}
               - name: {{ $k }}
                 value: '{{ $v }}'
-              {{- end }}
+{{- end }}
               image: "{{ .Values.common_scheduler_jobs.image.repository }}:{{ .Values.common.image.tag | default .Chart.AppVersion }}"
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               command:
