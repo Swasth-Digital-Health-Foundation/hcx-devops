@@ -8,7 +8,7 @@ image:
   repository: swasth2021/hcx-scheduler-jobs
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "c67d3b63_21"
 
 imagePullSecrets: []
 nameOverride: ""
