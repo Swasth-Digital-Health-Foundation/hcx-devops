@@ -76,7 +76,7 @@ spec:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: hcx-UserSecret-requests
+  name: hcx-user-secret
   namespace: kube-system
 spec:
   schedule: "30 12 * * 1-5"
