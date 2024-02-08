@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: rjshrjndrn/api-gateway
+  repository: swasth2021/api-gateway
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "66c81ec_24"
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
