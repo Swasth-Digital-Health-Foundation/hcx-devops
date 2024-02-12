@@ -66,12 +66,18 @@ spec:
     component: {{ .Release.Name }}-taskmanager
 
 ---
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: {{ .Release.Name }}-jobmanager
   namespace: {{ .Values.namespace }}
 spec:
+  spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: flink
+      component: {{ .Release.Name }}-jobmanager
   template:
     metadata:
       labels:
@@ -97,7 +103,7 @@ spec:
       {{- if .Values.hcx_pipeline_jobs.enable_distributed_checkpointing -}}
       serviceAccount: {{ .Release.Namespace }}-sa
       {{- end }}
-      restartPolicy: OnFailure
+      restartPolicy: Always
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
