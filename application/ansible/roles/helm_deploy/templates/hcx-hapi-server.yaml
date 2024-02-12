@@ -1,5 +1,0 @@
-image:
-  tag: "{{ image_tag }}"
-  repository: "{{ docker_repo }}/hcx-hapi-server"
-service:
-  type: ClusterIP 
