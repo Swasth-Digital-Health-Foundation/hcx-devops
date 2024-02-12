@@ -44,6 +44,6 @@ variable "database_subnet" {
 }
 variable "postgres_password" {
   type = string
-  default = "SuperSecurePassword"
+  default = ""
   sensitive = true
 }
