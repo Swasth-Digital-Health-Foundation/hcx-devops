@@ -87,7 +87,7 @@ spec:
         spec:
           serviceAccountName: hcx-functional-schedulers
           containers:
-            - name: hcx-retry-requests
+            - name: hcx-UserSecret
               env:
 {{- range $k, $v := .Values.common_scheduler_jobs }}
               - name: {{ $k }}
@@ -105,7 +105,7 @@ spec:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: hcx-RevocationStatus
+  name: hcx-revocation-status
   namespace: kube-system
 spec:
   schedule: "30 12 * * 1-5"
@@ -117,7 +117,7 @@ spec:
         spec:
           serviceAccountName: hcx-functional-schedulers
           containers:
-            - name: hcx-RevocationStatus
+            - name: hcx-revocation-status
               env:
 {{- range $k, $v := .Values.common_scheduler_jobs }}
               - name: {{ $k }}
