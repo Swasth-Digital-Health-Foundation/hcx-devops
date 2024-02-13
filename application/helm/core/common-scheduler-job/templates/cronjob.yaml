@@ -87,7 +87,7 @@ spec:
         spec:
           serviceAccountName: hcx-functional-schedulers
           containers:
-            - name: hcx-UserSecret
+            - name: hcx-user-secret
               env:
 {{- range $k, $v := .Values.common_scheduler_jobs }}
               - name: {{ $k }}
