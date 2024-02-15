@@ -266,7 +266,7 @@ ingress:
     # nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
   # nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
   # nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
-  path: /
+  path: /dashboard
   pathType: ImplementationSpecific
   hosts:
     - chart-example.local
