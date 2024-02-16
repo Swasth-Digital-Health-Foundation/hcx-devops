@@ -15,7 +15,7 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
   enabled: true
   ingressClassName: nginx
-  path: /
+  path: /dashboard
   pathType: ImplementationSpecific
   hosts:
     - <YOUR_HOST_NAME>
@@ -93,7 +93,7 @@ extraSecrets:
     
     class AuthOIDCView(AuthOIDView):
     
-        @expose('/login/', methods=['GET', 'POST'])
+        @expose('/dashboard/login/', methods=['GET', 'POST'])
         def login(self, flag=True):
             sm = self.appbuilder.sm
             oidc = sm.oid

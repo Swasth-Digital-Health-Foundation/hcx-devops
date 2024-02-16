@@ -125,7 +125,7 @@ extraSecrets:
     class CustomAuthDBView(AuthDBView):
         login_template = 'appbuilder/general/security/login_db.html'
 
-        @expose('/login/', methods=['GET', 'POST'])
+        @expose('/dashboard/login/', methods=['GET', 'POST'])
         def login(self):
             decoded_token = {}
             # if request.args.get('username') is not None:
