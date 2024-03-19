@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "hcx-mock-service.fullname" . }}
+  name: {{ include "hcx-provider-service.fullname" . }}
   labels:
-    {{- include "hcx-mock-service.labels" . | nindent 4 }}
+    {{- include "hcx-provider-service.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.hcx_mock_service.replicaCount }}
+  replicas: {{ .Values.hcx_provider_service.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "hcx-mock-service.selectorLabels" . | nindent 6 }}
+      {{- include "hcx-provider-service.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,19 +18,19 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "hcx-mock-service.selectorLabels" . | nindent 8 }}
+        {{- include "hcx-provider-service.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "hcx-mock-service.serviceAccountName" . }}
+      serviceAccountName: {{ include "hcx-provider-service.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           env:
-          {{- range $k, $v := .Values.hcx_mock_service }}
+          {{- range $k, $v := .Values.hcx_provider_service }}
           - name: {{ $k }}
             value: '{{ $v }}'
           {{- end }}
@@ -65,7 +65,7 @@ spec:
             successThreshold: 1
             timeoutSeconds: 1
           resources:
-            {{- toYaml .Values.hcx_mock_service.resources | nindent 12 }}
+            {{- toYaml .Values.hcx_provider_service.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
