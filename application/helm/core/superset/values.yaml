@@ -226,7 +226,8 @@ configOverrides:
     FEATURE_FLAGS = {
       "ALERT_REPORTS": True,
       "ENABLE_TEMPLATE_PROCESSING": True,
-      "DASHBOARD_RBAC": True
+      "DASHBOARD_RBAC": True,
+      "DASHBOARD_NATIVE_FILTERS": True,
     }
 # Same as above but the values are files
 configOverridesFiles: {}
