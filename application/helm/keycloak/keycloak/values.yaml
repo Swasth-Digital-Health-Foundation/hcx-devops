@@ -5,11 +5,11 @@
 replicaCount: 1
 
 image:
-  repository: dockerhub/ndear-keycloak
+  repository: dockerhub/sunbird-rc-keycloak
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  # tag: "latest"
-  tag: "v0.0.9"
+  tag: "latest"
+  # tag: "v0.0.9"
 
 
 imagePullSecrets: []
