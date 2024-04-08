@@ -42,19 +42,29 @@ service:
   type: LoadBalancer 
   port: 8080
 
-env: 
-  # - name: JAVA_OPTS
-  #   value: "-server -Xms64m -Xmx2048m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true  --add-exports=java.base/sun.nio.ch=ALL-UNNAMED --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED --add-exports=jdk.unsupported/sun.reflect=ALL-UNNAMED"
-
-  # DB_VENDOR: postgres
-  # DB_ADDR: 'terraform-20211111045938760100000001.culmyp72rbwi.ap-south-1.rds.amazonaws.com'
-  # DB_PORT: 5432
-  # DB_DATABASE: keycloak
-  # DB_USER: hcxpostgresql
-  # DB_PASSWORD: SuperSecurePassword
-  # KEYCLOAK_USER: admin
-  # KEYCLOAK_PASSWORD: fcf615eb80ce6dbd0634
-  # KEYCLOAK_IMPORT: /opt/jboss/keycloak/imports/realm-export.json
+env:
+  - name: DB_ADDR
+    value: terraform-20211111045938760100000001.culmyp72rbwi.ap-south-1.rds.amazonaws.com
+  - name: DB_DATABASE
+    value: keycloak
+  - name: DB_PASSWORD
+    value: SuperSecurePassword
+  - name: DB_PORT
+    value: "5432"
+  - name: DB_USER
+    value: hcxpostgresql
+  - name: DB_VENDOR
+    value: postgres
+  - name: KEYCLOAK_PASSWORD
+    value: fcf615eb80ce6dbd0634
+  - name: KEYCLOAK_USER
+    value: admin
+  - name: authentication_enabled
+    value: "false"
+  - name: JAVA_OPTS
+    value: "-server -Xms64m -Xmx2048m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true  --add-exports=java.base/sun.nio.ch=ALL-UNNAMED --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED --add-exports=jdk.unsupported/sun.reflect=ALL-UNNAMED"
+  - name: KEYCLOAK_IMPORT
+    value: /opt/jboss/keycloak/imports/realm-export.json
 
 ingress:
   enabled: false
