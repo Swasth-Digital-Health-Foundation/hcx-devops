@@ -50,13 +50,6 @@ spec:
             - /bin/sh
             - -c
             - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
-          livenessProbe:
-            exec:
-              command:
-              - ls 
-              - -all
-            initialDelaySeconds: 5
-            periodSeconds: 5
           resources:
             {{- toYaml .Values.hcx_registry.resources | nindent 12 }}
           volumeMounts:
