@@ -3,8 +3,5 @@ kind: ConfigMap
 metadata:
   name: registryschemas
 data:
-{{- $files := (.Files.Glob "config/*").AsConfig }}
-{{- range $key, $value := $files }}
-  {{ $key }}: |-
-{{ $value }}
-{{- end }}
+  procedures.json: |-
+{{ .Files.Get "configs/procedures.json" | indent 4 }}
