@@ -58,7 +58,7 @@ spec:
             {{- toYaml .Values.hcx_provider_service.resources | nindent 12 }}
           volumeMounts:
             - name: registryschemas
-              mountPath: /home/hcx/config
+              mountPath: /tmp/hcx/config
       volumes:
         - name: registryschemas
           configMap: 
