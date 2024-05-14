@@ -2,12 +2,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: registryschemas
-  namespace: {{ .Release.Namespace }}
 data:
-{{- $files := .Files }}
-{{- range $path, $bytes := $files.Glob "config/*" }}
-  {{ $fileName := path.Base $path }}
-  {{ $fileContent := $files.Get $path | b64enc }}
-  {{ $fileName }}: |-
-    {{ $fileContent | indent 4 }}
+{{- $files := (.Files.Glob "config/*").AsConfig }}
+{{- range $key, $value := $files }}
+  {{ $key }}: |-
+{{ $value }}
 {{- end }}
