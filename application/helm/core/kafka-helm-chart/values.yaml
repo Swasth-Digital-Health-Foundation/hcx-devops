@@ -1523,6 +1523,8 @@ provisioning:
   - name: "{{ .Values.env }}.hcx.response.search"
   - name: "{{ .Values.env }}.ingest"
   - name: "{{ .Values.env }}.masterdata.ingest"
+  - name: "{{ .Values.env }}.hcx.request.message"
+  
     partitions: 1
     replicationFactor: 1
 
