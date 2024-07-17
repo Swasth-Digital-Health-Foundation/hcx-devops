@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: swasth2021/hcx-hapi-server
+  repository: hub.docker.com/r/dhruvk1808
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
