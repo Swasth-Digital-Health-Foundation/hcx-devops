@@ -1,0 +1,132 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: kube-system
+  annotations:
+    eks.amazonaws.com/role-arn: {{ .Values.common_scheduler_jobs.serviceaccount }}
+  name: hcx-functional-schedulers
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hcx-participant-validator
+  namespace: kube-system
+spec:
+  schedule: "30 12 * * 1-5"
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        spec:
+{{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+{{ toYaml . | indent 12 }}
+{{- end }}
+          securityContext:
+{{ toYaml .Values.podSecurityContext | indent 12 }}
+          serviceAccountName: hcx-functional-schedulers
+          containers:
+            - name: hcx-participant-validator
+              env:
+{{- range $k, $v := .Values.common_scheduler_jobs }}
+              - name: {{ $k }}
+                value: '{{ $v }}'
+{{- end }}
+              image: "{{ .Values.common_scheduler_jobs.image.repository }}:{{ .Values.common.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              command:
+                - /bin/sh
+                - -c
+                - date; java -version; java -jar app.jar ParticipantValidation
+          restartPolicy: OnFailure
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hcx-retry-requests
+  namespace: kube-system
+spec:
+  schedule: "30 12 * * 1-5"
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: hcx-functional-schedulers
+          containers:
+            - name: hcx-retry-requests
+              env:
+{{- range $k, $v := .Values.common_scheduler_jobs }}
+              - name: {{ $k }}
+                value: '{{ $v }}'
+{{- end }}
+              image: "{{ .Values.common_scheduler_jobs.image.repository }}:{{ .Values.common.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              command:
+                - /bin/sh
+                - -c
+                - date; java -version; java -jar app.jar Retry
+          restartPolicy: OnFailure
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hcx-user-secret
+  namespace: kube-system
+spec:
+  schedule: "30 12 * * 1-5"
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: hcx-functional-schedulers
+          containers:
+            - name: hcx-user-secret
+              env:
+{{- range $k, $v := .Values.common_scheduler_jobs }}
+              - name: {{ $k }}
+                value: '{{ $v }}'
+{{- end }}
+              image: "{{ .Values.common_scheduler_jobs.image.repository }}:{{ .Values.common.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              command:
+                - /bin/sh
+                - -c
+                - date; java -version; java -jar app.jar UserSecret
+          restartPolicy: OnFailure
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hcx-revocation-status
+  namespace: kube-system
+spec:
+  schedule: "30 12 * * 1-5"
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: hcx-functional-schedulers
+          containers:
+            - name: hcx-revocation-status
+              env:
+{{- range $k, $v := .Values.common_scheduler_jobs }}
+              - name: {{ $k }}
+                value: '{{ $v }}'
+{{- end }}
+              image: "{{ .Values.common_scheduler_jobs.image.repository }}:{{ .Values.common.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              command:
+                - /bin/sh
+                - -c
+                - date; java -version; java -jar app.jar RevocationStatus
+          restartPolicy: OnFailure

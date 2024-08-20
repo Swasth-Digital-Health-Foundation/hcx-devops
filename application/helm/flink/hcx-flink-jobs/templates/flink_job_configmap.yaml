@@ -27,8 +27,8 @@ data:
         parallelism = 1
         consumer.parallelism = 1
         checkpointing.compressed = true
-        checkpointing.interval = 60000
-        checkpointing.pause.between.seconds = 30000
+        checkpointing.interval = 30000
+        checkpointing.pause.between.seconds = 5000
         restart-strategy.attempts = 3
         restart-strategy.delay = 30000
       }

@@ -44,6 +44,6 @@ variable "database_subnet" {
 }
 variable "postgres_password" {
   type = string
-  default = "SuperSecurePassword"
+  default = @terrahelp-encrypted(ajiRA+pZWnzHg9R27H5MSy1STUM3g1xLCNHpWvgqxLJkoUUg339T)
   sensitive = true
 }

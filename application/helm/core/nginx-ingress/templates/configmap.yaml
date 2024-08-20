@@ -28,6 +28,7 @@ data:
       rewrite /api/(.*) /$1 break;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Host $host;
+      client_max_body_size 500M;
       set $target http://api-gateway.{{.Release.Namespace}}.svc.cluster.local:8095;
       proxy_pass $target;
     }
