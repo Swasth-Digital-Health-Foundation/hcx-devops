@@ -99,7 +99,7 @@ rules:
   - apiGroups:
       - apps
     resourceNames:
-      - {{ .Release.Name }}-ingress
+      - {{ .Release.Name }}
     resources:
       - deployments
     verbs:
