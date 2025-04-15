@@ -1,0 +1,6 @@
+---
+- name: Install Elasticsearch 8.17.4 locally
+  hosts: elasticsearch
+  become: yes
+  roles:
+    - role: roles/elasticsearch
