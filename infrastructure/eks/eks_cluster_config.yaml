@@ -6,9 +6,9 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: hcx-dev-1-27
+  name: hcx-dev-1-29
   region: ap-south-1
-  version: "1.27"
+  version: "1.32"
 
 vpc:
   id: "vpc-0a7e986d70910cfea"
@@ -78,14 +78,14 @@ fargateProfiles:
 addons:
   - name: aws-ebs-csi-driver
     # all below properties are optional
-    version: v1.20.0-eksbuild.1
+    version: v1.40.0-eksbuild.1
     tags:
       env: hcx-dev
       name: fp-hcx-dev
   - name: vpc-cni
     attachPolicyARNs:
       - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-    version: v1.13.4-eksbuild.1
+    version: v1.19.2-eksbuild.5
     tags:
       env: hcx-dev
       name: fp-hcx-dev
