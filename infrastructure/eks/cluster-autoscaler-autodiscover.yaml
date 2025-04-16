@@ -148,7 +148,7 @@ spec:
         fsGroup: 65534
       serviceAccountName: cluster-autoscaler
       containers:
-        - image: k8s.gcr.io/autoscaling/cluster-autoscaler:v1.20.2
+        - image: registry.k8s.io/autoscaling/cluster-autoscaler-amd64:v1.32.1
           name: cluster-autoscaler
           env:
             - name: AWS_REGION
