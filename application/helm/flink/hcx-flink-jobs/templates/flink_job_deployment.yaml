@@ -97,7 +97,7 @@ spec:
                 path: {{ .Release.Name }}.conf
               - key: log4j_console_properties
                 path: log4j-console.properties
-      serviceAccountName: {{ .Release.Namespace }}-sa
+      serviceAccount: {{ .Release.Namespace }}-sa
       restartPolicy: Always
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -189,7 +189,7 @@ spec:
                 path: base-config.conf
               - key: {{ .Release.Name }}
                 path: {{ .Release.Name }}.conf
-      serviceAccountName: {{ .Release.Namespace }}-sa
+      serviceAccount: {{ .Release.Namespace }}-sa
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
