@@ -111,7 +111,7 @@ spec:
           command: ["/opt/flink/bin/standalone-job.sh"]
           args:
             - start-foreground
-            - --job-classname={{ index .Values $name "job_classname" }}
+            - --job-classname={{ index .Values .Release.Name "job_classname" }}
             - -Dweb.submit.enable=false
             - -Dmetrics.reporter.prom.class=org.apache.flink.metrics.prometheus.PrometheusReporter
             - -Dmetrics.reporter.prom.port={{ .Values.jobmanager.prom_port }}
