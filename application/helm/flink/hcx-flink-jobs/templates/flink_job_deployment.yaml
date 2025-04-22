@@ -30,9 +30,9 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-jobmanager-webui
   namespace: {{ .Values.namespace }}
-  {{- if .Values.service.annotations }}
+  {{- with .Values.service.annotations }}
   annotations:
-    {{- toYaml .Values.service.annotations | nindent 4 }}
+{{ toYaml . | indent 4 }}
   {{- end }}
 spec:
   type: ClusterIP
@@ -84,6 +84,8 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "{{ .Values.jobmanager.prom_port }}"
     spec:
+      serviceAccountName: {{ .Release.Namespace }}-sa
+      restartPolicy: Always
       volumes:
         - name: flink-config-volume
           configMap:
@@ -97,21 +99,19 @@ spec:
                 path: {{ .Release.Name }}.conf
               - key: log4j_console_properties
                 path: log4j-console.properties
-      serviceAccount: {{ .Release.Namespace }}-sa
-      restartPolicy: Always
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       containers:
         - name: {{ .Release.Name }}-jobmanager
-          image: "{{ .Values.hcx_pipeline_jobs.image.repository }}:{{ .Values.image.tag | default "" }}"
+          image: "{{ .Values.hcx_pipeline_jobs.image.repository }}{{ if .Values.image.tag }}:{{ .Values.image.tag }}{{ end }}"
           imagePullPolicy: Always
           workingDir: /opt/flink
           command: ["/opt/flink/bin/standalone-job.sh"]
           args:
             - start-foreground
-            - --job-classname={{ index .Values .Release.Name "job_classname" }}
+            - --job-classname={{ index .Values $name "job_classname" }}
             - -Dweb.submit.enable=false
             - -Dmetrics.reporter.prom.class=org.apache.flink.metrics.prometheus.PrometheusReporter
             - -Dmetrics.reporter.prom.port={{ .Values.jobmanager.prom_port }}
@@ -120,8 +120,8 @@ spec:
             - -Dparallelism.default=1
             - -Dblob.server.port={{ .Values.jobmanager.blob_port }}
             - -Dqueryable-state.server.ports={{ .Values.jobmanager.query_port }}
-            {{- range .Values.jobManagerAdditionalArgs }}
-            - {{ . }}
+            {{- range $v := .Values.jobManagerAdditionalArgs }}
+            - {{ $v }}
             {{- end }}
             - --config.file.path
             - /data/flink/conf/{{ .Release.Name }}.conf
@@ -148,14 +148,14 @@ spec:
               mountPath: /opt/flink/conf/log4j-console.properties
               subPath: log4j-console.properties
           resources:
-            {{- toYaml .Values.hcx_pipeline_jobs.jobmanagerResources | nindent 12 }}
+{{ toYaml .Values.hcx_pipeline_jobs.jobmanagerResources | indent 12 }}
       {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
 
 ---
@@ -176,6 +176,7 @@ spec:
         app: flink
         component: {{ .Release.Name }}-taskmanager
     spec:
+      serviceAccountName: {{ .Release.Namespace }}-sa
       volumes:
         - name: flink-config-volume
           configMap:
@@ -189,14 +190,13 @@ spec:
                 path: base-config.conf
               - key: {{ .Release.Name }}
                 path: {{ .Release.Name }}.conf
-      serviceAccount: {{ .Release.Namespace }}-sa
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       containers:
         - name: {{ .Release.Name }}-taskmanager
-          image: "{{ .Values.hcx_pipeline_jobs.image.repository }}:{{ .Values.image.tag | default "" }}"
+          image: "{{ .Values.hcx_pipeline_jobs.image.repository }}{{ if .Values.image.tag }}:{{ .Values.image.tag }}{{ end }}"
           imagePullPolicy: Always
           workingDir: {{ .Values.taskmanager.flink_work_dir }}
           command: ["/opt/flink/bin/taskmanager.sh"]
@@ -208,15 +208,15 @@ spec:
             - -Dmetrics.reporter.prom.port=9251-9260
             - -Djobmanager.rpc.address={{ .Release.Name }}-jobmanager
             - -Dtaskmanager.rpc.port={{ .Values.taskmanager.rpc_port }}
-            {{- range .Values.taskManagerAdditionalArgs }}
-            - {{ . }}
+            {{- range $v := .Values.taskManagerAdditionalArgs }}
+            - {{ $v }}
             {{- end }}
           ports:
             - containerPort: {{ .Values.taskmanager.rpc_port }}
               name: rpc
           {{- if .Values.healthcheck }}
           livenessProbe:
-            {{- toYaml .Values.livenessProbe | nindent 12 }}
+{{ toYaml .Values.livenessProbe | indent 12 }}
           {{- end }}
           volumeMounts:
             - name: flink-config-volume
@@ -232,12 +232,12 @@ spec:
               mountPath: /data/flink/conf/{{ .Release.Name }}.conf
               subPath: {{ .Release.Name }}.conf
           resources:
-            {{- toYaml .Values.hcx_pipeline_jobs.taskmanagerResources | nindent 12 }}
+{{ toYaml .Values.hcx_pipeline_jobs.taskmanagerResources | indent 12 }}
       {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
