@@ -643,7 +643,7 @@ replica:
   kind: StatefulSet
   ## @param replica.replicaCount Number of Valkey replicas to deploy
   ##
-  replicaCount: 3
+  replicaCount: 1
   ## @param replica.configuration Configuration for Valkey replicas nodes
   ## ref: https://valkey.io/topics/config
   ##
