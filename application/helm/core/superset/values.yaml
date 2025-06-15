@@ -167,14 +167,17 @@ extraSecrets:
                     publickey=f"-----BEGIN PUBLIC KEY-----\n{public_key}\n-----END PUBLIC KEY-----"
 
                 try:
+                  if keycloak_response.json().get('aud') is not None:
                     decoded_token = jwt.decode(request.args.get('jwt_token'), publickey, algorithms=["RS256"], audience='account')
-                    print("Token verification successful:", decoded_token)
+                  else:
+                    decoded_token = jwt.decode(request.args.get('jwt_token'), publickey, algorithms=["RS256"])
+                  print("Token verification successful:", decoded_token)
                 except jwt.ExpiredSignatureError:
                     print("Token has expired.")
                 except jwt.InvalidAudienceError:
                     print("Invalid audience.")
-                except jwt.JWTError:
-                    print("Token verification failed.")
+                except jwt.PyJWTError as e:
+                    print("Token verification failed:", e)
                 
                 
                 is_user_exists = self.appbuilder.sm.find_user(username=username)
@@ -185,7 +188,7 @@ extraSecrets:
                     first_name=username,
                     last_name='',
                     email=username,
-                    role=self.appbuilder.sm.find_role(role)
+                    role=[self.appbuilder.sm.find_role(role)] if type(self.appbuilder.sm.find_role(role)) is str else role,
                     )
                 else:
                     user = is_user_exists
