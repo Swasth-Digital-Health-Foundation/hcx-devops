@@ -173,10 +173,10 @@ extraSecrets:
                     print("Token has expired.")
                 except jwt.InvalidAudienceError:
                     print("Invalid audience.")
-                except jwt.JWTError:
-                    print("Token verification failed.")
-                
-                
+                except jwt.PyJWTError as e:
+                    print("Token verification failed:", e)
+
+
                 is_user_exists = self.appbuilder.sm.find_user(username=username)
                 if is_user_exists is None:
                     logging.info('Creating new   user %s', username);
