@@ -171,7 +171,7 @@ extraSecrets:
                     decoded_token = jwt.decode(request.args.get('jwt_token'), publickey, algorithms=["RS256"], audience='account')
                   else:
                     decoded_token = jwt.decode(request.args.get('jwt_token'), publickey, algorithms=["RS256"])
-                    print("Token verification successful:", decoded_token)
+                  print("Token verification successful:", decoded_token)
                 except jwt.ExpiredSignatureError:
                     print("Token has expired.")
                 except jwt.InvalidAudienceError:
